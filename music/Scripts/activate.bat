@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\caspa\Documents\Code\Python Projects\Music\music
+set VIRTUAL_ENV=C:\Users\caspa\Documents\Code\Python Projects\Music\Partitur\music
 
 if not defined PROMPT set PROMPT=$P$G
 

@@ -5,3 +5,5 @@ https://github.com/ytdl-org/youtube-dl
 youtube-dl [OPTIONS] URL [URL...]
 
 youtube-dl -x --audio-format "wav" "youtube.com/link/zum/video"
+
+pip -r requirements.txt

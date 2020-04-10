@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\caspa\Documents\Code\Python Projects\Music\music"
+VIRTUAL_ENV="C:\Users\caspa\Documents\Code\Python Projects\Music\Partitur\music"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
