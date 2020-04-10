@@ -1,0 +1,7 @@
+pip install youtube_dl
+
+https://github.com/ytdl-org/youtube-dl
+
+youtube-dl [OPTIONS] URL [URL...]
+
+youtube-dl -x --audio-format "wav" "youtube.com/link/zum/video"
