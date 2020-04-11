@@ -4,7 +4,7 @@
 ``pip -r install requirenments.txt``
 
 
-or if you want to keep a clean workspace, run the folowing commands:
+or if you want to keep a clean workspace, run the folowing commands to create a virtual environment:
 
 ``pip -m venv music``
 
