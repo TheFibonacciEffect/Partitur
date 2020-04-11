@@ -1,3 +1,5 @@
-from Partitur.extractor import Extractor
+from extractor import Extractor
 
-Extractor
+extract = Extractor(r"Partitur\528hz Pure tone No Music-IMeusltcDGM.wav")
+
+print(extract.extract())

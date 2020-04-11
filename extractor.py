@@ -10,6 +10,6 @@ class Extractor:
     def __init__(self, file):
         self.file = file
     def extract(self):
-        pass #TODO https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.wavfile.read.html https://stackoverflow.com/questions/2060628/reading-wav-files-in-python
-        fs, data = wavfile.read('./output/audio.wav')
+        #TODO https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.wavfile.read.html https://stackoverflow.com/questions/2060628/reading-wav-files-in-python
+        fs, data = wavfile.read(self.file)
         return fs, data
