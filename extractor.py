@@ -14,20 +14,27 @@ class Extractor:
     def __init__(self, file):
         self.file = file
         self.data = None
+        fs, data = wavfile.read(self.file) #extract data
+        self.samplesPerSecond = fs
+        self.data = data
     def extract(self, channel = 0):
         """ input: channel (mostly 1 or 0)
         output: the data of the channel using a numphy array """
-        fs, data = wavfile.read(self.file)
-        self.samples = fs
-        self.data = data
         return self.data[:,channel]
-    def plot(self, channel = 0,sample_length = None):
-        """ input: channel (std = 0), sample length (stop)
-        plots the music using matplotlib """
-        if sample_length == None:
-            sample_length = self.extract(channel = 0).__len__()
-        y = self.data[:,channel][:sample_length]
-        x = np.arange(0,sample_length * 1/ self.samples,1/self.samples)
+    def plot(self, channel = 0,sample_end = None, sample_beginning = 0): #in seconds
+        """ input: channel (std = 0), sample_end in seconds, sample_beginning in seconds
+        plots the music using matplotlib, the self.extract() method will have to be called first """
+        if sample_end == None:
+            sample_end = self.extract(channel = 0).__len__() // self.samplesPerSecond
+        
+        x = np.arange(sample_beginning, sample_end, 1/self.samplesPerSecond) #start, stop, step
+
+        #transform
+        sample_beginning = sample_beginning * self.samplesPerSecond
+        sample_end = sample_end * self.samplesPerSecond 
+        sample_length = sample_end - sample_beginning
+
+        y = self.data[:,channel][sample_beginning :sample_end]
         plt.plot(x,y)
         plt.show()
 
