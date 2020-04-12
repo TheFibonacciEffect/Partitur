@@ -1,4 +1,4 @@
-from extractor import Extractor
+from main import Extractor
 
 extract = Extractor(r"528hz Pure tone No Music-IMeusltcDGM.wav")
 

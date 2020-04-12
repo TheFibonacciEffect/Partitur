@@ -8,12 +8,6 @@ youtube-dl -x --audio-format "wav" "youtube.com/link/zum/video"
 
 pip -r requirements.txt
 
-Example for usage of np.array
-    Data-type consisting of more than one element:
-    
-    >>> x = np.array([(1,2),(3,4)],dtype=[('a','<i4'),('b','<i4')])
-    >>> x['a']
-    array([1, 3])
-
 import numpy as np
 np.array(((1,2),(3,4)))[:,0] #this is like a matrix
+

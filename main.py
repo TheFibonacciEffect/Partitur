@@ -38,3 +38,10 @@ class Extractor:
         plt.plot(x,y)
         plt.show()
 
+from scipy.fft import fft
+
+class Transformator(Extractor):
+    def __init__(self, file, channel = 0):
+        """gets values and fourrier transforms them"""
+        super().__init__(file)
+        #TODO do fourrier transform
