@@ -1,6 +1,6 @@
 from extractor import Extractor
 
-extract = Extractor(r"Partitur\528hz Pure tone No Music-IMeusltcDGM.wav")
+extract = Extractor(r"528hz Pure tone No Music-IMeusltcDGM.wav")
 
 import matplotlib.pyplot as plt
 import numpy as np
