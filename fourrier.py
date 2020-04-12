@@ -12,7 +12,15 @@ yf = fft(y)
 xf = np.linspace(0.0, 1.0/(2.0*T), N//2)
 
 import matplotlib.pyplot as plt
+
+plt.plot(x,y)
+plt.grid()
+plt.savefig(r"images\osszilation.png")
+plt.clf()
+
+
 plt.plot(xf, 2.0/N * np.abs(yf[0:N//2]))
 plt.grid()
-plt.show()
+plt.savefig(r"images\fourrier.png")
+#plt.show()
 
