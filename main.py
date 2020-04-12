@@ -16,7 +16,7 @@ class Extractor:
         self.data = None
         fs, data = wavfile.read(self.file) #extract data
         self.samplesPerSecond = fs
-        self.data = data
+        self.data = data    #type = matrix (sort of)
     def extract(self, channel = 0):
         """ input: channel (mostly 1 or 0)
         output: the data of the channel using a numphy array """
@@ -45,3 +45,19 @@ class Transformator(Extractor):
         """gets values and fourrier transforms them"""
         super().__init__(file)
         #TODO do fourrier transform
+
+        # fft(x, n=None, axis=-1, norm=None, overwrite_x=False, workers=None)
+        # Compute the one-dimensional discrete Fourier Transform.
+        # Returns
+        # -------
+        # out : complex ndarray
+        #     The truncated or zero-padded input, transformed along the axis
+        #     indicated by `axis`, or the last one if `axis` is not specified.
+
+        # Raises
+        # ------
+        # IndexError
+        #     if `axes` is larger than the last axis of `x`.
+        
+        #fields 
+        self.data
