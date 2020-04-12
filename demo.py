@@ -6,4 +6,4 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 print(extract.extract().__len__())
-extract.plot(sample_beginning= 4,sample_end=5)
+extract.plot(sample_beginning= 4.2,sample_end=4.5)

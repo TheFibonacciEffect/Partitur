@@ -30,8 +30,8 @@ class Extractor:
         x = np.arange(sample_beginning, sample_end, 1/self.samplesPerSecond) #start, stop, step
 
         #transform
-        sample_beginning = sample_beginning * self.samplesPerSecond
-        sample_end = sample_end * self.samplesPerSecond 
+        sample_beginning = int(sample_beginning * self.samplesPerSecond)
+        sample_end = int(sample_end * self.samplesPerSecond) 
         sample_length = sample_end - sample_beginning
 
         y = self.data[:,channel][sample_beginning :sample_end]
