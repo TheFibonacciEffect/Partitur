@@ -10,7 +10,7 @@ or if you want to keep a clean workspace, run the folowing commands to create a 
 
 execute the batch/ps/cmdlet/script found in ``.\music\Scripts\`` (whatever suits you)
 
-``pip -r install requirenments.txt``
+``pip install -r requirenments.txt``
 
 ## This is what it does so far
 
