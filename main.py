@@ -52,7 +52,7 @@ class Transformator(Extractor):
         self.fdata = fft(x = self.data[:,channel], workers= -1)
 
     def getTransform(self, ):
-        pass #TODO make put data generation into seperate function to make it able to be called inderpendendly
+        pass #TODO put data generation into seperate method to make it able to be called inderpendendly
     def plot(self,channel=0,sample_beginning=0,sample_end=-1, frequency_beginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
         
         y = self.extract(channel,sample_beginning,sample_end)
@@ -67,10 +67,7 @@ class Transformator(Extractor):
         xf = np.linspace(0.0, 1.0/(2.0*T), N//2)[frequency_beginning: frequency_end] #start, stop, number of points : to cancel strech by linespacing,
 
         # plt.plot(xf[:-self.samplesPerSecond*29], 2.0/N * np.abs(yf[0:N//2][:-self.samplesPerSecond*29]))
-        plt.plot(
-            xf,
-            2.0/N * np.abs(yf[0:N//2])
-            )
+        plt.plot(xf, np.abs(yf)) #absolute value of fourrier transform
         plt.grid()
         #plt.savefig(r"images\fourrier.png")
         plt.show()
