@@ -20,8 +20,8 @@ class Extractor:
         self.samplesPerSecond = fs
         self.data = data    #type = matrix (sort of)
     def extract(self, channel = 0, beginning=0, end = -1):
-        """ input: channel (mostly 1 or 0), beginning (seconds), end (seconds)
-
+        """ 
+        input: channel (mostly 1 or 0), beginning (seconds), end (seconds)
         output: the data of the channel using a numphy array """
         beginning, end = int(beginning * self.samplesPerSecond), int(end * self.samplesPerSecond)
         return self.data[:,channel][beginning:end] #this is not yet in seconds, see the plot method on how to implement
@@ -48,49 +48,30 @@ class Transformator(Extractor):
     def __init__(self, file, channel = 0):
         """gets values and fourrier transforms them"""
         super().__init__(file)
-        #TODO do fourrier transform
-        #how does the x axis need to look like in oder to give the right scale and make frequencies readable?
-
-        # fft(x, n=None, axis=-1, norm=None, overwrite_x=False, workers=None)
-        # Compute the one-dimensional discrete Fourier Transform.
-        # Parameters
-        # ----------
-        # x : array_like
-        #     Input array, can be complex.
-        # n : int, optional
-        #     Length of the transformed axis of the output.
-        #     If `n` is smaller than the length of the input, the input is cropped.
-        #     If it is larger, the input is padded with zeros.  If `n` is not given,
-        #     the length of the input along the axis specified by `axis` is used.
-        # axis : int, optional
-        #     Axis over which to compute the FFT.  If not given, the last axis is
-        #     used.
-        # norm : {None, "ortho"}, optional
-        #     Normalization mode. Default is None, meaning no normalization on the
-        #     forward transforms and scaling by ``1/n`` on the `ifft`.
-        #     For ``norm="ortho"``, both directions are scaled by ``1/sqrt(n)``.
-        # overwrite_x : bool, optional
-        #     If True, the contents of `x` can be destroyed; the default is False.
-        #     See the notes below for more details.
-        # workers : int, optional
-        #     Maximum number of workers to use for parallel computation. If negative,
-        #     the value wraps around from ``os.cpu_count()``. See below for more
-        #     details.
-        # Returns
-        # -------
-        # out : complex ndarray
-        #     The truncated or zero-padded input, transformed along the axis
-        #     indicated by `axis`, or the last one if `axis` is not specified.
-
-        # Raises
-        # ------
-        # IndexError
-        #     if `axes` is larger than the last axis of `x`.
-        
         #fields 
-        self.fdata = fft(x = self.data[:,channel], workers= -1) #complex value, __len__() = 300
+        self.fdata = fft(x = self.data[:,channel], workers= -1)
 
-        def plot(self):
-            f = np.arange(0,300, self.samplesPerSecond)
-            plt.plot(f, self.fdata)
+    def getTransform(self, ):
+        pass #TODO make put data generation into seperate function to make it able to be called inderpendendly
+    def plot(self,channel=0,sample_beginning=0,sample_end=-1, frequency_beginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
+        
+        y = self.extract(channel,sample_beginning,sample_end)
+        # Number of sample points
+        N = y.__len__()
+        # sample spacing
+        T = 1.0 / self.samplesPerSecond
+        frequency_beginning = int(frequency_beginning*T*N)
+        frequency_end = int(frequency_end*T*N)
+
+        yf = fft(y)[frequency_beginning:frequency_end] #TODO Wie viel frequenz entspricht der Abstand zwischen zwei Datenpukten? N//2*1.0/(2.0*T)
+        xf = np.linspace(0.0, 1.0/(2.0*T), N//2)[frequency_beginning: frequency_end] #start, stop, number of points : to cancel strech by linespacing,
+
+        # plt.plot(xf[:-self.samplesPerSecond*29], 2.0/N * np.abs(yf[0:N//2][:-self.samplesPerSecond*29]))
+        plt.plot(
+            xf,
+            2.0/N * np.abs(yf[0:N//2])
+            )
+        plt.grid()
+        #plt.savefig(r"images\fourrier.png")
+        plt.show()
             
