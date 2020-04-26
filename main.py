@@ -24,7 +24,7 @@ class Extractor:
         input: channel (mostly 1 or 0), beginning (seconds), end (seconds)
         output: the data of the channel using a numphy array """
         beginning, end = int(beginning * self.samplesPerSecond), int(end * self.samplesPerSecond)
-        return self.data[:,channel][beginning:end] #this is not yet in seconds, see the plot method on how to implement
+        return self.data[:,channel][beginning:end]
     def plot(self, channel = 0,sample_end = None, sample_beginning = 0): #in seconds
         """ input: channel (std = 0), sample_end in seconds, sample_beginning in seconds
         plots the music using matplotlib, the self.extract() method will have to be called first """
