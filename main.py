@@ -51,24 +51,24 @@ class Transformator(Extractor):
         #fields 
         self.fdata = fft(x = self.data[:,channel], workers= -1)
 
-    def getTransform(self, ):
-        pass #TODO put data generation into seperate method to make it able to be called inderpendendly
-    def plot(self,channel=0,sample_beginning=0,sample_end=-1, frequency_beginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
-        
-        y = self.extract(channel,sample_beginning,sample_end)
-        # Number of sample points
+    def getTransform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65):
+        y = self.extract(channel,sample_beginning,sample_end) #TODO put data generation into seperate method to make it able to be called inderpendendly
         N = y.__len__()
-        # sample spacing
+        yf = fft(y)
         T = 1.0 / self.samplesPerSecond
         frequency_beginning = int(frequency_beginning*T*N)
         frequency_end = int(frequency_end*T*N)
-
-        yf = fft(y)[frequency_beginning:frequency_end] #TODO Wie viel frequenz entspricht der Abstand zwischen zwei Datenpukten? N//2*1.0/(2.0*T)
-        xf = np.linspace(0.0, 1.0/(2.0*T), N//2)[frequency_beginning: frequency_end] #start, stop, number of points : to cancel strech by linespacing,
-
-        # plt.plot(xf[:-self.samplesPerSecond*29], 2.0/N * np.abs(yf[0:N//2][:-self.samplesPerSecond*29]))
+        return yf[frequency_beginning:frequency_end]
+    def plot(self,channel=0,sample_beginning=0,sample_end=-1, frequency_beginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
+        """plot fourrier transform"""
+        #y = self.extract(channel,sample_beginning,sample_end)
+        
+        yf = self.getTransform(channel, sample_beginning, sample_end, frequency_beginning, frequency_end)
+        
+        #nr. sample points
+        samplePoints = yf.__len__()
+        xf = np.linspace(frequency_beginning, frequency_end, samplePoints) #start, stop, nr. segments
         plt.plot(xf, np.abs(yf)) #absolute value of fourrier transform
         plt.grid()
-        #plt.savefig(r"images\fourrier.png")
         plt.show()
             
