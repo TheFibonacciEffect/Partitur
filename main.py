@@ -45,14 +45,12 @@ class Extractor:
 from scipy.fft import fft
 
 class Transformator(Extractor):
-    def __init__(self, file, channel = 0):
+    def __init__(self, file):
         """gets values and fourrier transforms them"""
         super().__init__(file)
-        #fields 
-        self.fdata = fft(x = self.data[:,channel], workers= -1)
-
-    def getTransform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65):
-        y = self.extract(channel,sample_beginning,sample_end) #TODO put data generation into seperate method to make it able to be called inderpendendly
+        
+    def transform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65):
+        y = self.extract(channel,sample_beginning,sample_end)
         N = y.__len__()
         yf = fft(y)
         T = 1.0 / self.samplesPerSecond
@@ -63,7 +61,7 @@ class Transformator(Extractor):
         """plot fourrier transform"""
         #y = self.extract(channel,sample_beginning,sample_end)
         
-        yf = self.getTransform(channel, sample_beginning, sample_end, frequency_beginning, frequency_end)
+        yf = self.transform(channel, sample_beginning, sample_end, frequency_beginning, frequency_end)
         
         #nr. sample points
         samplePoints = yf.__len__()
@@ -71,4 +69,16 @@ class Transformator(Extractor):
         plt.plot(xf, np.abs(yf)) #absolute value of fourrier transform
         plt.grid()
         plt.show()
-            
+
+class Translator(Transformator):
+    def __init__(self, file, channel=0):
+        super().__init__(file, channel=channel)
+    def translate(self, beginning, end):
+        pass
+
+    def frequencyToNoteValue(self, frequency, startingNote = 440): #a=440 Hz
+        n = 12 * np.log2(frequency/startingNote)    #see http://www.techlib.com/reference/musical_note_frequencies.htm 
+        return n
+    def translateNote(self, note):
+        """return key of note cloesest to given frequency eg. 441 -> a"""
+        pass #https://stackoverflow.com/questions/12141150/from-list-of-integers-get-number-closest-to-a-given-value
