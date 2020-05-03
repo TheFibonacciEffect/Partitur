@@ -1,6 +1,7 @@
 from scipy.io import wavfile
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.signal import findpeaks
 
 
 class Extractor:
@@ -49,19 +50,23 @@ class Transformator(Extractor):
         """gets values and fourrier transforms them"""
         super().__init__(file)
         
-    def transform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65):
+    def transform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65):    #change standard values to something reasonable
         y = self.extract(channel,sample_beginning,sample_end)
         N = y.__len__()
         yf = fft(y)
         T = 1.0 / self.samplesPerSecond
         frequency_beginning = int(frequency_beginning*T*N)
         frequency_end = int(frequency_end*T*N)
+        yf = self.fdata
         return yf[frequency_beginning:frequency_end]
     def plot(self,channel=0,sample_beginning=0,sample_end=-1, frequency_beginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
         """plot fourrier transform"""
         #y = self.extract(channel,sample_beginning,sample_end)
-        
-        yf = self.transform(channel, sample_beginning, sample_end, frequency_beginning, frequency_end)
+        try:
+            yf = self.fdata
+        except NameError:
+            yf = self.transform(channel, sample_beginning, sample_end, frequency_beginning, frequency_end)
+
         
         #nr. sample points
         samplePoints = yf.__len__()
@@ -69,6 +74,14 @@ class Transformator(Extractor):
         plt.plot(xf, np.abs(yf)) #absolute value of fourrier transform
         plt.grid()
         plt.show()
+    def findextrema(self, x_min, x_max, **kwargs):
+        try:
+            yf = self.fdata
+        except NameError:
+            yf = self.transform(kwargs)
+        peaks, _ = findpeaks(self.fdata)
+        
+
 
 class Translator(Transformator):
     def __init__(self, file, channel=0):
