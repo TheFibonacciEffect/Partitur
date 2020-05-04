@@ -61,21 +61,21 @@ class Transformator(Extractor):
         N = yf.__len__()
         xf = np.linspace(frequency_beginning, frequency_end, N)
         self.fdata = xf, np.abs(yf)
-        return xf, np.abs(yf)
+        return self.fdata
 
 
     def plot(self,channel=0,sample_beginning=0,sample_end=-1, frequency_beginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
         """plot fourrier transform"""
         #y = self.extract(channel,sample_beginning,sample_end)
         try:
-            yf = self.fdata
+            xf, yf = self.fdata
         except AttributeError:
-            _, yf = self.transform(channel, sample_beginning, sample_end, frequency_beginning, frequency_end)
+            xf, yf = self.transform(channel, sample_beginning, sample_end, frequency_beginning, frequency_end)
 
         
         #nr. sample points
         samplePoints = yf.__len__()
-        xf = np.linspace(frequency_beginning, frequency_end, samplePoints) #start, stop, nr. segments
+        #xf = np.linspace(frequency_beginning, frequency_end, samplePoints) #start, stop, nr. segments
         plt.plot(xf, np.abs(yf)) #absolute value of fourrier transform
         plt.grid()
         plt.show()
@@ -104,11 +104,13 @@ class Translator(Transformator):
     def __init__(self, file, channel=0):
         super().__init__(file, channel=channel)
     def translate(self, beginning, end):
+        #frequencyToNoteValue
         pass
 
     def frequencyToNoteValue(self, frequency, startingNote = 440): #a=440 Hz
         n = 12 * np.log2(frequency/startingNote)    #see http://www.techlib.com/reference/musical_note_frequencies.htm 
         return n
+
     def translateNote(self, note):
         """return key of note cloesest to given frequency eg. 441 -> a"""
         pass #https://stackoverflow.com/questions/12141150/from-list-of-integers-get-number-closest-to-a-given-value
