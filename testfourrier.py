@@ -2,7 +2,7 @@ from scipy.fft import fft
 import numpy as np
 from main import Extractor
 
-extract = Extractor(r"60 Hz Test Tone-GqwFimG3X3w.wav")
+extract = Extractor(r"ressources\60 Hz Test Tone-GqwFimG3X3w.wav")
 # Number of sample points
 N = extract.extract(beginning=0, end=-1).__len__()
 # sample spacing

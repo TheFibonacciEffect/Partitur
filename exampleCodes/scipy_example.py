@@ -1,7 +1,7 @@
 #from os.path import dirname, join as pjoin
 from scipy.io import wavfile
 
-samplerate, data = wavfile.read(r"Partitur\528hz Pure tone No Music-IMeusltcDGM.wav")
+samplerate, data = wavfile.read(r"ressources\528hz Pure tone No Music-IMeusltcDGM.wav")
 print(f"number of channels = {data.shape[1]}")
 
 length = data.shape[0] / samplerate
