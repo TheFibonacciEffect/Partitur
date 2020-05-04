@@ -53,11 +53,11 @@ class Transformator(Extractor):
     def transform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65):    #change standard values to something reasonable
         y = self.extract(channel,sample_beginning,sample_end)
         N = y.__len__()
-        yf = fft(y)
+        yf = fft(y, workers = -1)
         T = 1.0 / self.samplesPerSecond
-        frequency_beginning = int(frequency_beginning*T*N)
-        frequency_end = int(frequency_end*T*N)
-        yf = yf[frequency_beginning:frequency_end]
+        frequency_beginningIndex = int(frequency_beginning*T*N)
+        frequency_endIndex = int(frequency_end*T*N)
+        yf = yf[frequency_beginningIndex:frequency_endIndex]
         N = yf.__len__()
         xf = np.linspace(frequency_beginning, frequency_end, N)
         self.fdata = xf, np.abs(yf)
@@ -112,5 +112,5 @@ class Translator(Transformator):
         return n
 
     def translateNote(self, note):
-        """return key of note cloesest to given frequency eg. 441 -> a"""
+        """return key of note cloesest to given frequency eg. 440 -> a"""
         pass #https://stackoverflow.com/questions/12141150/from-list-of-integers-get-number-closest-to-a-given-value
