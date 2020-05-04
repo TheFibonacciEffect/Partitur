@@ -107,8 +107,8 @@ class Translator(Transformator):
         #frequencyToNoteValue
         pass
 
-    def frequencyToNoteValue(self, frequency, startingNote = 440): #a=440 Hz
-        n = 12 * np.log2(frequency/startingNote)    #see http://www.techlib.com/reference/musical_note_frequencies.htm 
+    def frequencyToNoteValue(self, frequency, fStartingNote = 440): #a=440 Hz
+        n = 12 * np.log2(frequency/fStartingNote)    #see http://www.techlib.com/reference/musical_note_frequencies.htm 
         return n
 
     def translateNote(self, note):
