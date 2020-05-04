@@ -57,14 +57,14 @@ class Transformator(Extractor):
     def __init__(self, file):
         super().__init__(file)
         
-    def transform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65):    #TODO change standard values to something reasonable
+    def transform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65, slicing = 2):    #TODO change standard values to something reasonable
         """fourrier transforms given array, returns (xf,yf)
         returns:
             xf: x coordinate linspace
             yf: fourrier transform of input array"""
-        y = self.extract(channel,sample_beginning,sample_end)
+        y = self.extract(channel,sample_beginning,sample_end)[::slicing]    #increase slicing if MemoryError occours
         N = y.__len__()
-        yf = fft(y, workers = -1)
+        yf = fft(y, workers = -1) #workers = -1 is faster but will raise memory error
         T = 1.0 / self.samplesPerSecond
         frequency_beginningIndex = int(frequency_beginning*T*N)
         frequency_endIndex = int(frequency_end*T*N)
