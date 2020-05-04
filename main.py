@@ -1,7 +1,7 @@
 from scipy.io import wavfile
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.signal import findpeaks
+from scipy.signal import find_peaks
 
 
 class Extractor:
@@ -57,15 +57,19 @@ class Transformator(Extractor):
         T = 1.0 / self.samplesPerSecond
         frequency_beginning = int(frequency_beginning*T*N)
         frequency_end = int(frequency_end*T*N)
-        yf = self.fdata
-        return yf[frequency_beginning:frequency_end]
+        yf = yf[frequency_beginning:frequency_end]
+        self.fdata = yf
+        N = yf.__len__()
+        return np.linspace(frequency_beginning, frequency_end, N), np.abs(yf)
+
+
     def plot(self,channel=0,sample_beginning=0,sample_end=-1, frequency_beginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
         """plot fourrier transform"""
         #y = self.extract(channel,sample_beginning,sample_end)
         try:
             yf = self.fdata
-        except NameError:
-            yf = self.transform(channel, sample_beginning, sample_end, frequency_beginning, frequency_end)
+        except AttributeError:
+            _, yf = self.transform(channel, sample_beginning, sample_end, frequency_beginning, frequency_end)
 
         
         #nr. sample points
@@ -74,13 +78,24 @@ class Transformator(Extractor):
         plt.plot(xf, np.abs(yf)) #absolute value of fourrier transform
         plt.grid()
         plt.show()
-    def findextrema(self, x_min, x_max, **kwargs):
+
+
+    def findextrema(self,distance = 10,*args): #TODO implement  f_min, f_max
+        """returns:
+            x and y coordinates of peaks as two seperate tuples"""
         try:
             yf = self.fdata
-        except NameError:
-            yf = self.transform(kwargs)
-        peaks, _ = findpeaks(self.fdata)
+        except AttributeError:
+            xf , yf = self.transform(*args)
         
+        peaks, _ = find_peaks(yf, distance)    #indecies
+        
+        samplePoints = yf.__len__()
+
+        xfPeaks = xf[peaks]
+        yfPeaks = yf[peaks]
+        return  xfPeaks, yfPeaks
+
 
 
 class Translator(Transformator):
