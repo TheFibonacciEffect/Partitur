@@ -50,7 +50,11 @@ class Transformator(Extractor):
         """gets values and fourrier transforms them"""
         super().__init__(file)
         
-    def transform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65):    #change standard values to something reasonable
+    def transform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65):    #TODO change standard values to something reasonable
+        """fourrier transforms given array, returns (xf,yf)
+        returns:
+            xf: x coordinate linspace
+            yf: fourrier transform of input array"""
         y = self.extract(channel,sample_beginning,sample_end)
         N = y.__len__()
         yf = fft(y, workers = -1)
@@ -72,19 +76,14 @@ class Transformator(Extractor):
         except AttributeError:
             xf, yf = self.transform(channel, sample_beginning, sample_end, frequency_beginning, frequency_end)
 
-        
-        #nr. sample points
-        samplePoints = yf.__len__()
-        #xf = np.linspace(frequency_beginning, frequency_end, samplePoints) #start, stop, nr. segments
         plt.plot(xf, np.abs(yf)) #absolute value of fourrier transform
         plt.grid()
         plt.show()
 
 
-    def findextrema(self,distance = 10,*args): #TODO implement  f_min, f_max
+    def findextrema(self,distance = 5,*args): #TODO implement  f_min, f_max
         """returns:
-            (xfPeaks, yfPeaks), dtype = np.array
-            """
+            (xfPeaks, yfPeaks), dtype = np.array"""
         try:
             xf, yf = self.fdata
         except AttributeError:
