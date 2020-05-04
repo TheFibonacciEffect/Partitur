@@ -21,8 +21,7 @@ class Extractor:
         self.samplesPerSecond = fs
         self.data = data    #type = matrix (sort of)
     def extract(self, channel = 0, beginning=0, end = -1):
-        """ 
-        input: channel (mostly 1 or 0), beginning (seconds), end (seconds)
+        """input: channel (mostly 1 or 0), beginning (seconds), end (seconds)
         output: the data of the channel using a numphy array """
         beginning, end = int(beginning * self.samplesPerSecond), int(end * self.samplesPerSecond)
         return self.data[:,channel][beginning:end]
@@ -46,8 +45,16 @@ class Extractor:
 from scipy.fft import fft
 
 class Transformator(Extractor):
+    """Fourrier transforms given data
+    inherits from Extractor
+    methods:
+        transform
+        find extrema
+        plot
+    fields:
+        fdata:  contains x and y coordinates of transformed data
+    """
     def __init__(self, file):
-        """gets values and fourrier transforms them"""
         super().__init__(file)
         
     def transform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65):    #TODO change standard values to something reasonable
@@ -111,5 +118,6 @@ class Translator(Transformator):
         return n
 
     def translateNote(self, note):
-        """return key of note cloesest to given frequency eg. 440 -> a"""
+        """return character for note cloesest to given frequency eg. 440 -> a"""
         pass #https://stackoverflow.com/questions/12141150/from-list-of-integers-get-number-closest-to-a-given-value
+        
