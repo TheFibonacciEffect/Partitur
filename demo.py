@@ -9,15 +9,8 @@ import numpy as np
 
 transform = Transformator(r"60 Hz Test Tone-GqwFimG3X3w.wav")
 
-# data = [
-#     (1,2),
-#     (3,4)
-# ] #transform.findextrema()
-# print(data[:])
-# print(data[:,0])
-
-plt.plot(*transform.findextrema(), 'x')
 plt.plot(*transform.transform())
+plt.plot(*transform.findextrema(), 'x')
 
 
 plt.show()

@@ -58,9 +58,10 @@ class Transformator(Extractor):
         frequency_beginning = int(frequency_beginning*T*N)
         frequency_end = int(frequency_end*T*N)
         yf = yf[frequency_beginning:frequency_end]
-        self.fdata = yf
         N = yf.__len__()
-        return np.linspace(frequency_beginning, frequency_end, N), np.abs(yf)
+        xf = np.linspace(frequency_beginning, frequency_end, N)
+        self.fdata = xf, np.abs(yf)
+        return xf, np.abs(yf)
 
 
     def plot(self,channel=0,sample_beginning=0,sample_end=-1, frequency_beginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
@@ -82,9 +83,10 @@ class Transformator(Extractor):
 
     def findextrema(self,distance = 10,*args): #TODO implement  f_min, f_max
         """returns:
-            x and y coordinates of peaks as two seperate tuples"""
+            (xfPeaks, yfPeaks), dtype = np.array
+            """
         try:
-            yf = self.fdata
+            xf, yf = self.fdata
         except AttributeError:
             xf , yf = self.transform(*args)
         
