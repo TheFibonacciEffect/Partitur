@@ -24,7 +24,8 @@ class Extractor:
         """input: channel (mostly 1 or 0), beginning (seconds), end (seconds)
         output: the data of the channel using a numphy array """
         beginning, end = int(beginning * self.samplesPerSecond), int(end * self.samplesPerSecond)
-        return self.data[:,channel][beginning:end]
+        self.data = self.data[:,channel][beginning:end]
+        return self.data
     def plot(self, channel = 0,sample_end = None, sample_beginning = 0): #in seconds
         """ input: channel (std = 0), sample_end in seconds, sample_beginning in seconds
         plots the music using matplotlib, the self.extract() method will have to be called first """
@@ -57,11 +58,13 @@ class Transformator(Extractor):
     def __init__(self, file):
         super().__init__(file)
         
-    def transform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65, slicing = 2):    #TODO change standard values to something reasonable
+    def transform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65, slicing = 2, chunks = 1):    #TODO change standard values to something reasonable
         """fourrier transforms given array, returns (xf,yf)
+        slicing improves processing spead and memory usage
         returns:
             xf: x coordinate linspace
             yf: fourrier transform of input array"""
+        #TODO feed data in chunks (maybe even read it in chunks, to impove memory usage?)
         y = self.extract(channel,sample_beginning,sample_end)[::slicing]    #increase slicing if MemoryError occours
         N = y.__len__()
         yf = fft(y, workers = -1) #workers = -1 is faster but will raise memory error
