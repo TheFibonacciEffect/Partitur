@@ -66,8 +66,7 @@ class Transformator(Extractor):
         returns:
             xf: x coordinate linspace
             yf: fourrier transform of input array"""
-        #TODO feed data in chunks (maybe even read it in chunks, to impove memory usage?)
-
+        
         #feed data in chuncks:
 
         y = self.extract(channel,sample_beginning,sample_end)[::slicing]    #increase slicing if MemoryError occours
