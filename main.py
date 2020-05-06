@@ -58,7 +58,7 @@ class Transformator(Extractor):
     def __init__(self, file):
         super().__init__(file)
         
-    def transform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65, slicing = 2, chunks = 1):    #TODO change standard values to something reasonable
+    def transform(self,channel=0, sample_beginning=0, sample_end=-1, frequency_beginning = 55, frequency_end =  65, slicing = 1, chunks = 1):    #TODO change standard values to something reasonable
         """fourrier transforms given array, returns (xf,yf)
         slicing improves processing spead and memory usage
         returns:
@@ -67,7 +67,7 @@ class Transformator(Extractor):
         #TODO feed data in chunks (maybe even read it in chunks, to impove memory usage?)
         y = self.extract(channel,sample_beginning,sample_end)[::slicing]    #increase slicing if MemoryError occours
         N = y.__len__()
-        yf = fft(y, workers = -1) #workers = -1 is faster but will raise memory error
+        yf = fft(y, workers = -1) #workers = -1 is faster but will raise memory error #TODO when data is empty, raise exeption
         T = 1.0 / self.samplesPerSecond
         frequency_beginningIndex = int(frequency_beginning*T*N)
         frequency_endIndex = int(frequency_end*T*N)
@@ -101,8 +101,7 @@ class Transformator(Extractor):
         
         peaks, _ = find_peaks(yf, distance)    #indecies
         
-        samplePoints = yf.__len__()
-
+        
         xfPeaks = xf[peaks]
         yfPeaks = yf[peaks]
         return  xfPeaks, yfPeaks
