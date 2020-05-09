@@ -1,3 +1,4 @@
+from scipy.fft import fft
 from scipy.io import wavfile
 import matplotlib.pyplot as plt
 import numpy as np
@@ -43,7 +44,6 @@ class Extractor:
         plt.plot(x,y)
         plt.show()
 
-from scipy.fft import fft
 
 class Transformator(Extractor):
     """Fourrier transforms given data
