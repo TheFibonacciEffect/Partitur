@@ -61,14 +61,19 @@ class Transformator(Extractor):
     def transform(self,channel=0, sample_beginning=0, sample_end=-1, 
     frequency_beginning = 55, frequency_end =  65, slicing = 1, chunks = 1):    
     #TODO change standard values to something reasonable
-        """fourrier transforms given array, returns (xf,yf)
+        """the fourrier transform gives a representation of the frequencies in the input array
+        fourrier transforms given array, returns (xf,yf)
         slicing improves processing spead and memory usage
         returns:
             xf: x coordinate linspace
             yf: fourrier transform of input array"""
         
-        #feed data in chuncks:
+        #when data is empty, raise exeption
+        if sample_beginning == sample_end:
+            raise IndexError("starting and ending point are the same")
 
+        #feed data in chuncks:
+        #TODO calculate chunk size depending on the sample size
         y = self.extract(channel,sample_beginning,sample_end)[::slicing]    #increase slicing if MemoryError occours
         chunkIndecies = tuple(map(lambda x: int(x), np.linspace(0,len(y),chunks + 1)))
         N = y.__len__()
@@ -84,7 +89,7 @@ class Transformator(Extractor):
             exec(f"del(fchunk{i})")
         yf = np.array(totalData)
 
-        #yf = fft(y, workers = -1) #workers = -1 is faster but will raise memory error #TODO when data is empty, raise exeption
+        
         T = 1.0 / self.samplesPerSecond
         frequency_beginningIndex = int(frequency_beginning*T*N)
         frequency_endIndex = int(frequency_end*T*N)
@@ -126,11 +131,35 @@ class Transformator(Extractor):
 
 
 class Translator(Transformator):
-    def __init__(self, file, channel=0):
-        super().__init__(file, channel=channel)
+    def __init__(self, file):
+        super().__init__(file)
+    
     def translate(self, beginning, end):
         #frequencyToNoteValue
         pass
+
+    def findMainFrequencies(self, number):
+        #TODO sort frequencies
+        xUnsorted , yUnsorted = self.findextrema()
+        ySorted = np.array(sorted(yUnsorted))
+
+        def indexer(itterable, itterableUnsorted):
+            for i in itterable:
+                x = np.where(itterableUnsorted==i) #itterableUnsorted.where(i)
+                yield x
+
+        yIndecies = np.array(tuple(indexer(ySorted, yUnsorted)))
+        yIndecies.reshape(1,)
+
+        def sortByIndex(itterable, indecies):
+            for i in indecies:
+                yield itterable[i]
+
+        xSorted = np.array(tuple(sortByIndex(xUnsorted , yIndecies)))
+        #print(xSorted,ySorted)
+
+        return xSorted[number:-1], ySorted[number:-1]
+
 
     def frequencyToNoteValue(self, frequency, fStartingNote = 440): #a=440 Hz
         n = 12 * np.log2(frequency/fStartingNote)    #see http://www.techlib.com/reference/musical_note_frequencies.htm 
