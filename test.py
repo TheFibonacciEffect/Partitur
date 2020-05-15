@@ -1,48 +1,22 @@
+from main import Extractor, Transformator, Translator
 
-# There are different ways to do a Quick Sort partition, this implements the
-# Hoare partition scheme. Tony Hoare also created the Quick Sort algorithm.
-def partition(y, x, low, high):
-    # We select the middle element to be the pivot. Some implementations select
-    # the first element or the last element. Sometimes the median value becomes
-    # the pivot, or a random one. There are many more strategies that can be
-    # chosen or created.
-    pivot = y[(low + high) // 2]
-    i = low - 1
-    j = high + 1
-    while True:
-        i += 1
-        while y[i] < pivot:
-            i += 1
+import matplotlib.pyplot as plt
+import numpy as np
 
-        j -= 1
-        while y[j] > pivot:
-            j -= 1
+from scipy.io import wavfile
 
-        if i >= j:
-            return j
+transform = Transformator(r"ressources\B flat Trupet.wav") #ressources\Piano A.wav
 
-        # If an element at i (on the left of the pivot) is larger than the
-        # element at j (on right right of the pivot), then swap them
-        y[i], y[j] = y[j], y[i]
-        x[i], x[j] = x[j], x[i]
+plt.plot(*transform.transform(sample_beginning=1, sample_end=2, frequency_beginning = 0, frequency_end =  500, slicing=1, chunks = 10))
+plt.plot(*transform.findextrema(), 'x')
+plt.show()
 
+# plt.plot(*transform.transform(sample_beginning=1, sample_end=1, frequency_beginning = 0, frequency_end =  4000, slicing=1, chunks = 10))
+# plt.plot(*transform.findextrema(), 'x')
 
-def quick_sort(y,x):
-    # Create a helper function that will be called recursively
-    def _quick_sort(y, x, low, high):
-        if low < high:
-            # This is the index after the pivot, where our lists are split
-            split_index = partition(y,x, low, high)
-            _quick_sort(y,x, low, split_index)
-            _quick_sort(y,x, split_index + 1, high)
+translator = Translator(r"ressources\B flat Trupet.wav") #ressources\60 Hz Test Tone-GqwFimG3X3w.wav
 
-    _quick_sort(y,x, 0, len(y) - 1)
-
-y = [1,5,2,8]
-
-x = list(range(len(y)))
-
-quick_sort(y,x)
-
-print(x,y)
-
+plt.plot(*translator.transform(sample_beginning=1, sample_end=2, frequency_beginning = 0, frequency_end =  500, slicing=1, chunks = 10))
+#plt.plot(*translator.findextrema(), 'x')
+plt.plot(*translator.findMainFrequencies(5), 'x')
+plt.show()
