@@ -118,19 +118,24 @@ class Transformator(Extractor):
                 totalData = eval(f"np.append(totalData, fchunk{i})")
                 exec(f"del(fchunk{i})")
             #raise MemoryError("the array is too big")   #TODO this is a placeholder
+        
         yf = np.array(totalData)
         del totalData
+
         #throw exeption, when data is empty (all zeros)
         if all(flag == 0 for flag in yf):
             raise LookupError(f"""
-        Broken Lines, broken strings,
-        Broken threads, broken springs,
-        Broken idols, broken heads,
-        People sleeping in broken beds,
-        Ain't no use jiving, 
-        Ain't no use joking,
-        EVERYTHING IS BROKEN
-        here is the data: {yf}""")
+            Broken Lines, broken strings,
+            Broken threads, broken springs,
+            Broken idols, broken heads,
+            People sleeping in broken beds,
+            Ain't no use jiving, 
+            Ain't no use joking,
+            EVERYTHING IS BROKEN
+
+            if you see this error, stop coding immediately, run and seek shelter in a nearby closet!
+            
+            (for serious, I have no idea how you got past the last error, that should have occured, you monster)""")
         
         T = 1.0 / self.samplesPerSecond
         frequency_beginningIndex = int(frequency_beginning*T*N)
@@ -159,7 +164,8 @@ class Transformator(Extractor):
         plt.show()
 
     def findextrema(self,distance = 5,recalculateData = False,*args): #TODO implement  f_min, f_max
-        """returns:
+        """if not recalculateData, uses data from self.fdata, otherwise self.transform(*args)
+        returns:
             (xfPeaks, yfPeaks), dtype = np.array"""
 
         if not recalculateData:
