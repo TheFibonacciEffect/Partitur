@@ -33,6 +33,7 @@ class Extractor:
         here is the data: {self.data}""")
 
         return self.data
+    
     def plot(self, channel = 0,sample_end = None, sample_beginning = 0): #in seconds
         """ input: channel (std = 0), sample_end in seconds, sample_beginning in seconds
         plots the music using matplotlib, the self.extract() method will have to be called first """
@@ -69,7 +70,7 @@ class Transformator(Extractor):
         
     def transform(self,channel=0, sample_beginning=0, sample_end=-1, 
     frequency_beginning = 55, frequency_end =  65, slicing = 1, chunks = 1):    
-    #TODO change standard values to something reasonable
+        #TODO change standard values to something reasonable
         """the fourrier transform gives a representation of the frequencies in the input array
         fourrier transforms given array, returns (xf,yf)
         slicing improves processing spead and memory usage
@@ -122,13 +123,13 @@ class Transformator(Extractor):
         #throw exeption, when data is empty (all zeros)
         if all(flag == 0 for flag in yf):
             raise LookupError(f"""
-Broken Lines, broken strings,
-Broken threads, broken springs,
-Broken idols, broken heads,
-People sleeping in broken beds,
-Ain't no use jiving, 
-Ain't no use joking,
-EVERYTHING IS BROKEN
+        Broken Lines, broken strings,
+        Broken threads, broken springs,
+        Broken idols, broken heads,
+        People sleeping in broken beds,
+        Ain't no use jiving, 
+        Ain't no use joking,
+        EVERYTHING IS BROKEN
         here is the data: {yf}""")
         
         T = 1.0 / self.samplesPerSecond
@@ -145,7 +146,6 @@ EVERYTHING IS BROKEN
         self.fdata = xf, np.abs(yf)
         return self.fdata
 
-
     def plot(self,channel=0,sample_beginning=0,sample_end=-1, frequency_beginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
         """plot fourrier transform"""
         #y = self.extract(channel,sample_beginning,sample_end)
@@ -158,13 +158,16 @@ EVERYTHING IS BROKEN
         plt.grid()
         plt.show()
 
-
-    def findextrema(self,distance = 5,*args): #TODO implement  f_min, f_max
+    def findextrema(self,distance = 5,recalculateData = False,*args): #TODO implement  f_min, f_max
         """returns:
             (xfPeaks, yfPeaks), dtype = np.array"""
-        try:
-            xf, yf = self.fdata
-        except AttributeError:
+
+        if not recalculateData:
+            try:
+                xf, yf = self.fdata
+            except AttributeError:
+                xf , yf = self.transform(*args)
+        else:
             xf , yf = self.transform(*args)
         
         peaks, _ = find_peaks(yf, distance)    #indecies
@@ -177,6 +180,7 @@ EVERYTHING IS BROKEN
 
 
 class Translator(Transformator):
+    """used to transform the extracted frequencies into Notes"""
     def __init__(self, file):
         super().__init__(file)
     
@@ -184,9 +188,12 @@ class Translator(Transformator):
         #frequencyToNoteValue
         pass
 
-    def findMainFrequencies(self, number):
-        #TODO sort frequencies
-        xUnsorted , yUnsorted = self.findextrema()
+    def findMainFrequencies(self, number, *args):
+        """takes the data from self.findextrema(*args), and sorts it.
+        returns:
+            (x, y) of the last [number] datapoints
+        """
+        xUnsorted , yUnsorted = self.findextrema(*args)
 
         # There are different ways to do a Quick Sort partition, this implements the
         # Hoare partition scheme. Tony Hoare also created the Quick Sort algorithm.
@@ -229,6 +236,7 @@ class Translator(Transformator):
 
         quick_sort(yUnsorted,xUnsorted)
         return xUnsorted[xUnsorted.__len__() - number:], yUnsorted[yUnsorted.__len__() - number:] #return the last five datatpoints
+    
     def frequencyToNoteValue(self, frequency, fStartingNote = 440): #a=440 Hz
         n = 12 * np.log2(frequency/fStartingNote)    #see http://www.techlib.com/reference/musical_note_frequencies.htm 
         return n
