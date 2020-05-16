@@ -19,6 +19,5 @@ translator = Translator(r"ressources\thegodfather.wav") #ressources\60 Hz Test T
 
 plt.show()
 plt.plot(*translator.transform(sample_beginning=1, sample_end=2, frequency_beginning = 0, frequency_end =  500, slicing=1, chunks = 10))
-#plt.plot(*translator.findextrema(), 'x')
 plt.plot(*translator.findMainFrequencies(5), 'x')
 plt.show()
