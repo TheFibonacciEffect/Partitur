@@ -12,13 +12,14 @@ jobs:
       - python/install-deps
       - python/save-cache
       - run:
-          command: python demo.py
-          name: Test
-      - run:
           name: Code Has Arrived
           command: |
             ls ./ressources/
             echo '^^^That should look familiar^^^'
+      - run:
+          command: python demo.py
+          name: Test
+
 workflows:
   main:
     jobs:
