@@ -70,8 +70,7 @@ class Transformator(Extractor):
         super().__init__(file)
         
     def transform(self,channel=0, sample_beginning=0, sample_end=-1, 
-    frequency_beginning = 55, frequency_end =  65, slicing = 1, chunks = 1):    
-        #TODO change standard values to something reasonable
+    frequency_beginning = 55, frequency_end =  65, slicing = 1, chunks = 1):
         """the fourrier transform gives a representation of the frequencies in the input array
         fourrier transforms given array, returns (xf,yf)
         slicing improves processing spead and memory usage
@@ -84,7 +83,6 @@ class Transformator(Extractor):
             raise IndexError("starting and ending point are the same")
 
         #feed data in chunks:
-        #TODO calculate chunk size depending on the sample size
         try: 
             y = self.data[::slicing]
         except AttributeError:
@@ -93,6 +91,7 @@ class Transformator(Extractor):
 
         N = y.__len__()
 
+        #TODO the chunking scales down the transform. This dosn't work.
         #chunk data & generate np.array
         try:
             chunkIndecies = tuple(map(int, np.linspace(0,len(y),chunks + 1)))
@@ -108,17 +107,19 @@ class Transformator(Extractor):
         except MemoryError:
             #delete and try again with lower resolution data, downcasting to int 32
             del totalData
-            chunkIndecies = tuple(map(int, np.linspace(0,len(y),chunks + 1)))
-            
-            totalData = np.array([]).astype(int)
-            for i in range(chunks):
-                exec(f"chunk{i} = y[chunkIndecies[i]:chunkIndecies[i+1]]")
-                exec(f"fchunk{i} = fft(chunk{i})")
-                exec(f"del(chunk{i})")
-                exec(f"fchunk{i} = fchunk{i}.astype(int)")
-                totalData = eval(f"np.append(totalData, fchunk{i})")
-                exec(f"del(fchunk{i})")
-            #raise MemoryError("the array is too big")   #TODO this is a placeholder
+            try:
+                chunkIndecies = tuple(map(int, np.linspace(0,len(y),chunks + 1)))
+                
+                totalData = np.array([]).astype(int)
+                for i in range(chunks):
+                    exec(f"chunk{i} = y[chunkIndecies[i]:chunkIndecies[i+1]]")
+                    exec(f"fchunk{i} = fft(chunk{i})")
+                    exec(f"del(chunk{i})")
+                    exec(f"fchunk{i} = fchunk{i}.astype(int)")
+                    totalData = eval(f"np.append(totalData, fchunk{i})")
+                    exec(f"del(fchunk{i})")
+            except MemoryError:
+                raise MemoryError("the array is too big")
         
         yf = np.array(totalData)
         del totalData
@@ -164,7 +165,7 @@ class Transformator(Extractor):
         plt.grid()
         plt.show()
 
-    def findextrema(self,distance = 5,recalculateData = False,*args): #TODO implement  f_min, f_max
+    def findextrema(self,distance = 5,recalculateData = False,*args):
         """if not recalculateData, uses data from self.fdata, otherwise self.transform(*args)
         returns:
             (xfPeaks, yfPeaks), dtype = np.array"""
