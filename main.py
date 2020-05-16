@@ -29,7 +29,8 @@ class Extractor:
 
         #throw exeption, when data is empty (all zeros)
         if all(flag == 0 for flag in self.data):
-            raise LookupError(f"""the data is empty, the wavefile could not be read, maybe it  has been corrupted?
+            raise LookupError(f"""the data is empty, the wavefile could not be read, maybe there is no music at that time?
+            Try to readjust the timeframe and try again.
         here is the data: {self.data}""")
 
         return self.data
@@ -90,12 +91,12 @@ class Transformator(Extractor):
             y = self.extract(channel,sample_beginning,sample_end)#[::slicing]    #increase slicing if MemoryError occours
             print(y is self.data)
 
-        
+        N = y.__len__()
 
         #chunk data & generate np.array
         try:
             chunkIndecies = tuple(map(int, np.linspace(0,len(y),chunks + 1)))
-            N = y.__len__()
+            
             
             totalData = np.array([])
             for i in range(chunks):
@@ -108,7 +109,7 @@ class Transformator(Extractor):
             #delete and try again with lower resolution data, downcasting to int 32
             del totalData
             chunkIndecies = tuple(map(int, np.linspace(0,len(y),chunks + 1)))
-            N = y.__len__()
+            
             totalData = np.array([]).astype(int)
             for i in range(chunks):
                 exec(f"chunk{i} = y[chunkIndecies[i]:chunkIndecies[i+1]]")
