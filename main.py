@@ -29,10 +29,12 @@ class Extractor:
 
         #throw exeption, when data is empty (all zeros)
         if all(flag == 0 for flag in self.data):
-            raise LookupError(f"""the data is empty, the wavefile could not be read, maybe it  has been corrupted?
+            raise LookupError(f"""the data is empty, the wavefile could not be read, maybe there is no music at that time?
+            Try to readjust the timeframe and try again.
         here is the data: {self.data}""")
 
         return self.data
+    
     def plot(self, channel = 0,sample_end = None, sample_beginning = 0): #in seconds
         """ input: channel (std = 0), sample_end in seconds, sample_beginning in seconds
         plots the music using matplotlib, the self.extract() method will have to be called first """
@@ -68,8 +70,7 @@ class Transformator(Extractor):
         super().__init__(file)
         
     def transform(self,channel=0, sample_beginning=0, sample_end=-1, 
-    frequency_beginning = 55, frequency_end =  65, slicing = 1, chunks = 1):    
-    #TODO change standard values to something reasonable
+    frequency_beginning = 55, frequency_end =  65, slicing = 1, chunks = 1):
         """the fourrier transform gives a representation of the frequencies in the input array
         fourrier transforms given array, returns (xf,yf)
         slicing improves processing spead and memory usage
@@ -82,19 +83,19 @@ class Transformator(Extractor):
             raise IndexError("starting and ending point are the same")
 
         #feed data in chunks:
-        #TODO calculate chunk size depending on the sample size
         try: 
             y = self.data[::slicing]
         except AttributeError:
             y = self.extract(channel,sample_beginning,sample_end)#[::slicing]    #increase slicing if MemoryError occours
             print(y is self.data)
 
-        
+        N = y.__len__()
 
+        #TODO the chunking scales down the transform. This dosn't work.
         #chunk data & generate np.array
         try:
             chunkIndecies = tuple(map(int, np.linspace(0,len(y),chunks + 1)))
-            N = y.__len__()
+            
             
             totalData = np.array([])
             for i in range(chunks):
@@ -106,30 +107,37 @@ class Transformator(Extractor):
         except MemoryError:
             #delete and try again with lower resolution data, downcasting to int 32
             del totalData
-            chunkIndecies = tuple(map(int, np.linspace(0,len(y),chunks + 1)))
-            N = y.__len__()
-            totalData = np.array([]).astype(int)
-            for i in range(chunks):
-                exec(f"chunk{i} = y[chunkIndecies[i]:chunkIndecies[i+1]]")
-                exec(f"fchunk{i} = fft(chunk{i})")
-                exec(f"del(chunk{i})")
-                exec(f"fchunk{i} = fchunk{i}.astype(int)")
-                totalData = eval(f"np.append(totalData, fchunk{i})")
-                exec(f"del(fchunk{i})")
-            #raise MemoryError("the array is too big")   #TODO this is a placeholder
+            try:
+                chunkIndecies = tuple(map(int, np.linspace(0,len(y),chunks + 1)))
+                
+                totalData = np.array([]).astype(int)
+                for i in range(chunks):
+                    exec(f"chunk{i} = y[chunkIndecies[i]:chunkIndecies[i+1]]")
+                    exec(f"fchunk{i} = fft(chunk{i})")
+                    exec(f"del(chunk{i})")
+                    exec(f"fchunk{i} = fchunk{i}.astype(int)")
+                    totalData = eval(f"np.append(totalData, fchunk{i})")
+                    exec(f"del(fchunk{i})")
+            except MemoryError:
+                raise MemoryError("the array is too big")
+        
         yf = np.array(totalData)
         del totalData
+
         #throw exeption, when data is empty (all zeros)
         if all(flag == 0 for flag in yf):
             raise LookupError(f"""
-Broken Lines, broken strings,
-Broken threads, broken springs,
-Broken idols, broken heads,
-People sleeping in broken beds,
-Ain't no use jiving, 
-Ain't no use joking,
-EVERYTHING IS BROKEN
-        here is the data: {yf}""")
+            Broken Lines, broken strings,
+            Broken threads, broken springs,
+            Broken idols, broken heads,
+            People sleeping in broken beds,
+            Ain't no use jiving, 
+            Ain't no use joking,
+            EVERYTHING IS BROKEN
+
+            if you see this error, stop coding immediately, run and seek shelter in a nearby closet!
+            
+            (for serious, I have no idea how you got past the last error, that should have occured, you monster)""")
         
         T = 1.0 / self.samplesPerSecond
         frequency_beginningIndex = int(frequency_beginning*T*N)
@@ -145,7 +153,6 @@ EVERYTHING IS BROKEN
         self.fdata = xf, np.abs(yf)
         return self.fdata
 
-
     def plot(self,channel=0,sample_beginning=0,sample_end=-1, frequency_beginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
         """plot fourrier transform"""
         #y = self.extract(channel,sample_beginning,sample_end)
@@ -158,13 +165,17 @@ EVERYTHING IS BROKEN
         plt.grid()
         plt.show()
 
-
-    def findextrema(self,distance = 5,*args): #TODO implement  f_min, f_max
-        """returns:
+    def findextrema(self,distance = 5,recalculateData = False,*args):
+        """if not recalculateData, uses data from self.fdata, otherwise self.transform(*args)
+        returns:
             (xfPeaks, yfPeaks), dtype = np.array"""
-        try:
-            xf, yf = self.fdata
-        except AttributeError:
+
+        if not recalculateData:
+            try:
+                xf, yf = self.fdata
+            except AttributeError:
+                xf , yf = self.transform(*args)
+        else:
             xf , yf = self.transform(*args)
         
         peaks, _ = find_peaks(yf, distance)    #indecies
@@ -177,6 +188,7 @@ EVERYTHING IS BROKEN
 
 
 class Translator(Transformator):
+    """used to transform the extracted frequencies into Notes"""
     def __init__(self, file):
         super().__init__(file)
     
@@ -184,9 +196,12 @@ class Translator(Transformator):
         #frequencyToNoteValue
         pass
 
-    def findMainFrequencies(self, number):
-        #TODO sort frequencies
-        xUnsorted , yUnsorted = self.findextrema()
+    def findMainFrequencies(self, number, *args):
+        """takes the data from self.findextrema(*args), and sorts it.
+        returns:
+            (x, y) of the last [number] datapoints
+        """
+        xUnsorted , yUnsorted = self.findextrema(*args)
 
         # There are different ways to do a Quick Sort partition, this implements the
         # Hoare partition scheme. Tony Hoare also created the Quick Sort algorithm.
@@ -229,6 +244,7 @@ class Translator(Transformator):
 
         quick_sort(yUnsorted,xUnsorted)
         return xUnsorted[xUnsorted.__len__() - number:], yUnsorted[yUnsorted.__len__() - number:] #return the last five datatpoints
+    
     def frequencyToNoteValue(self, frequency, fStartingNote = 440): #a=440 Hz
         n = 12 * np.log2(frequency/fStartingNote)    #see http://www.techlib.com/reference/musical_note_frequencies.htm 
         return n
