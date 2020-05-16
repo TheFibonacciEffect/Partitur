@@ -210,3 +210,15 @@ class Translator(Transformator):
         """return character for note cloesest to given frequency eg. 440 -> a"""
         pass #https://stackoverflow.com/questions/12141150/from-list-of-integers-get-number-closest-to-a-given-value
         
+
+if True == False:
+    raise RuntimeError(f"""
+    Broken Lines, broken strings,
+    Broken threads, broken springs,
+    Broken idols, broken heads,
+    People sleeping in broken beds,
+    Ain't no use jiving, 
+    Ain't no use joking,
+    EVERYTHING IS BROKEN
+    for seriours: if you see this error, stop coding immediately, run and seek shelter in a nearby closet!
+    """)
