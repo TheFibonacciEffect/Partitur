@@ -93,52 +93,9 @@ class Transformator(Extractor):
 
         #TODO the chunking scales down the transform. This dosn't work.
         #chunk data & generate np.array
-        try:
-            chunkIndecies = tuple(map(int, np.linspace(0,len(y),chunks + 1)))
-            
-            
-            totalData = np.array([])
-            for i in range(chunks):
-                exec(f"chunk{i} = y[chunkIndecies[i]:chunkIndecies[i+1]]")
-                exec(f"fchunk{i} = fft(chunk{i})")
-                exec(f"del(chunk{i})")
-                totalData = eval(f"np.append(totalData, fchunk{i})")
-                exec(f"del(fchunk{i})")
-        except MemoryError:
-            #delete and try again with lower resolution data, downcasting to int 32
-            del totalData
-            try:
-                chunkIndecies = tuple(map(int, np.linspace(0,len(y),chunks + 1)))
-                
-                totalData = np.array([]).astype(int)
-                for i in range(chunks):
-                    exec(f"chunk{i} = y[chunkIndecies[i]:chunkIndecies[i+1]]")
-                    exec(f"fchunk{i} = fft(chunk{i})")
-                    exec(f"del(chunk{i})")
-                    exec(f"fchunk{i} = fchunk{i}.astype(int)")
-                    totalData = eval(f"np.append(totalData, fchunk{i})")
-                    exec(f"del(fchunk{i})")
-            except MemoryError:
-                raise MemoryError("the array is too big")
-        
-        yf = np.array(totalData)
-        del totalData
 
-        #throw exeption, when data is empty (all zeros)
-        if all(flag == 0 for flag in yf):
-            raise LookupError(f"""
-            Broken Lines, broken strings,
-            Broken threads, broken springs,
-            Broken idols, broken heads,
-            People sleeping in broken beds,
-            Ain't no use jiving, 
-            Ain't no use joking,
-            EVERYTHING IS BROKEN
+        yf = fft(y, overwrite_x=True)
 
-            if you see this error, stop coding immediately, run and seek shelter in a nearby closet!
-            
-            (for serious, I have no idea how you got past the last error, that should have occured, you monster)""")
-        
         T = 1.0 / self.samplesPerSecond
         frequency_beginningIndex = int(frequency_beginning*T*N)
         frequency_endIndex = int(frequency_end*T*N)
