@@ -13,5 +13,5 @@ jobs:
       - run:
           name: Code Has Arrived
           command: |
-            ls -al
+            ls ./ressouces/
             echo '^^^That should look familiar^^^'
