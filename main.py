@@ -90,7 +90,6 @@ class Transformator(Extractor):
             y = self.data[::slicing]
         except AttributeError:
             y = self.extract(channel,sample_beginning,sample_end)#[::slicing]    #increase slicing if MemoryError occours
-            print(y is self.data)
 
         N = y.__len__()
 
