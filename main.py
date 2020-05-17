@@ -3,7 +3,7 @@ from scipy.io import wavfile
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import find_peaks
-
+from os.path import isfile
 
 class Extractor:
     """class used to extract a numpy array from a .wav file
@@ -16,7 +16,10 @@ class Extractor:
         plot(), plots it uning the matplotlib    
     """
     def __init__(self, file):
-        self.file = file
+        if isfile(file):
+            self.file = file
+        else:
+            self.file = file.replace("\\", "/" )
         
     def extract(self, channel = 0, beginning=0, end = -1):
         """input: channel (mostly 1 or 0), beginning (seconds), end (seconds)
