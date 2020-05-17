@@ -20,6 +20,7 @@ class Extractor:
             self.file = file
         else:
             self.file = file.replace("\\", "/" )
+            print(self.file)
         
     def extract(self, channel = 0, beginning=0, end = -1):
         """input: channel (mostly 1 or 0), beginning (seconds), end (seconds)
