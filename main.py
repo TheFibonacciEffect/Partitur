@@ -125,17 +125,17 @@ class Transformator(Extractor):
         plt.show()
 
     def findextrema(self,distance = 5,recalculateData = False,*args):
-        """if not recalculateData, uses data from self.fdata, otherwise self.transform(*args)
+        """if recalculateData, uses data from self.transform(*args), otherwise self.fdata
         returns:
             (xfPeaks, yfPeaks), dtype = np.array"""
 
-        if not recalculateData:
+        if recalculateData:
+            xf , yf = self.transform(*args)
+        else:
             try:
                 xf, yf = self.fdata
             except AttributeError:
                 xf , yf = self.transform(*args)
-        else:
-            xf , yf = self.transform(*args)
         
         peaks, _ = find_peaks(yf, distance)    #indecies
 
