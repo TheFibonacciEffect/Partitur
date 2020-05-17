@@ -17,10 +17,10 @@ jobs:
             ls ./ressources/
             echo '^^^That should look familiar^^^'
       - run:
-          command: |
-          python demo.py
-          python test.py
           name: Test
+          command: |
+            python demo.py
+            python test.py
 
 workflows:
   main:
