@@ -80,7 +80,7 @@ class Transformator(Extractor):
     def __init__(self, file):
         super().__init__(file)
         
-    def transform(self, frequency_beginning = 300, frequency_end =  1000, recalculateData = True, **kwargs):
+    def transform(self, frequencyBeginning = 300, frequency_end =  1000, recalculateData = True, **kwargs):
         """the fourrier transform gives a representation of the frequencies in the input array
         fourrier transforms given array, returns (xf,yf)
         slicing improves processing spead and memory usage
@@ -105,26 +105,26 @@ class Transformator(Extractor):
         yf = fft(y, overwrite_x=True)
 
         T = 1.0 / self.samplesPerSecond
-        frequency_beginningIndex = int(frequency_beginning*T*N)
+        frequencyBeginningIndex = int(frequencyBeginning*T*N)
         frequency_endIndex = int(frequency_end*T*N)
-        yf = yf[frequency_beginningIndex:frequency_endIndex]
+        yf = yf[frequencyBeginningIndex:frequency_endIndex]
         N = yf.__len__()
 
         if all(flag == 0 for flag in yf):
             raise LookupError(f"""the array is empty (it only contains zeros) you need to determine a different beginning and end for the frequency
         here is the array: {yf} it's length is {yf.__len__()}, its shape is {yf.shape}""")
 
-        xf = np.linspace(frequency_beginning, frequency_end, N)
+        xf = np.linspace(frequencyBeginning, frequency_end, N)
         self.fdata = xf, np.abs(yf)
         return self.fdata
 
-    def plot(self,channel=0,sampleBeginning=0,sampleEnd=-1, frequency_beginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
+    def plot(self,channel=0,sampleBeginning=0,sampleEnd=-1, frequencyBeginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
         """plot fourrier transform"""
         #y = self.extract(channel,sampleBeginning,sampleEnd)
         try:
             xf, yf = self.fdata
         except AttributeError:
-            xf, yf = self.transform(channel, sampleBeginning, sampleEnd, frequency_beginning, frequency_end)
+            xf, yf = self.transform(channel, sampleBeginning, sampleEnd, frequencyBeginning, frequency_end)
 
         plt.plot(xf, np.abs(yf)) #absolute value of fourrier transform
         plt.grid()
