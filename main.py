@@ -20,15 +20,17 @@ class Extractor:
             self.file = file
         else:
             self.file = file.replace("\\", "/" )    #UNIX uses foreward slashes instead of backslashes
-        
-    def extract(self, channel = 0, beginning=0, end = -1):
-        """input: channel (mostly 1 or 0), beginning (seconds), end (seconds)
+
+
+
+    def extract(self, channel = 0, sampleBeginning =0, sampleEnd = -1):
+        """input: channel (mostly 1 or 0), sampleBeginning (seconds), sampleEnd (seconds)
         output: the data of the channel using a numphy array """
         fs, data = wavfile.read(self.file) #extract data
         self.data = data
         self.samplesPerSecond = fs
-        beginning, end = int(beginning * self.samplesPerSecond), int(end * self.samplesPerSecond)
-        self.data = self.data[:,channel][beginning:end]
+        sampleBeginning, sampleEnd = int(sampleBeginning * self.samplesPerSecond), int(sampleEnd * self.samplesPerSecond)
+        self.data = self.data[:,channel][sampleBeginning:sampleEnd]
 
         #throw exeption, when data is empty (all zeros)
         if all(flag == 0 for flag in self.data):
@@ -36,25 +38,31 @@ class Extractor:
             Try to readjust the timeframe and try again.
         here is the data: {self.data}""")
 
+        #when data is empty, raise exeption
+        if sampleBeginning == sampleEnd:
+            raise IndexError("starting and ending point are the same")
+
         return self.data
-    
-    def plot(self, channel = 0,sample_end = None, sample_beginning = 0): #in seconds
-        """ input: channel (std = 0), sample_end in seconds, sample_beginning in seconds
+
+
+
+    def plot(self, channel = 0,sampleEnd = None, sampleBeginning = 0): #in seconds
+        """ input: channel (std = 0), sampleEnd in seconds, sampleBeginning in seconds
         plots the music using matplotlib, the self.extract() method will have to be called first """
         self.extract()
 
 
-        if sample_end == None:
-            sample_end = self.extract(channel = 0).__len__() // self.samplesPerSecond
+        if sampleEnd == None:
+            sampleEnd = self.extract(channel = 0).__len__() // self.samplesPerSecond
         
-        x = np.arange(sample_beginning, sample_end, 1/self.samplesPerSecond) #start, stop, step
+        x = np.arange(sampleBeginning, sampleEnd, 1/self.samplesPerSecond) #start, stop, step
 
         #transform
-        sample_beginning = int(sample_beginning * self.samplesPerSecond)
-        sample_end = int(sample_end * self.samplesPerSecond) 
-        sample_length = sample_end - sample_beginning
+        sampleBeginning = int(sampleBeginning * self.samplesPerSecond)
+        sampleEnd = int(sampleEnd * self.samplesPerSecond) 
+        sample_length = sampleEnd - sampleBeginning
 
-        y = self.data[sample_beginning :sample_end]
+        y = self.data[sampleBeginning :sampleEnd]
         plt.plot(x,y)
         plt.show()
 
@@ -72,8 +80,7 @@ class Transformator(Extractor):
     def __init__(self, file):
         super().__init__(file)
         
-    def transform(self,channel=0, sample_beginning=0, sample_end=-1, 
-    frequency_beginning = 55, frequency_end =  65, slicing = 1, chunks = 1):
+    def transform(self, frequency_beginning = 300, frequency_end =  1000, recalculateData = True, **kwargs):
         """the fourrier transform gives a representation of the frequencies in the input array
         fourrier transforms given array, returns (xf,yf)
         slicing improves processing spead and memory usage
@@ -81,15 +88,14 @@ class Transformator(Extractor):
             xf: x coordinate linspace
             yf: fourrier transform of input array"""
         
-        #when data is empty, raise exeption
-        if sample_beginning == sample_end:
-            raise IndexError("starting and ending point are the same")
 
-        #feed data in chunks:
-        try: 
-            y = self.data[::slicing]
-        except AttributeError:
-            y = self.extract(channel,sample_beginning,sample_end)#[::slicing]    #increase slicing if MemoryError occours
+        if recalculateData:
+            y = self.extract(**kwargs)
+        else:
+            try: 
+                y = self.data
+            except AttributeError:
+                y = self.extract(**kwargs)
 
         N = y.__len__()
 
@@ -112,30 +118,30 @@ class Transformator(Extractor):
         self.fdata = xf, np.abs(yf)
         return self.fdata
 
-    def plot(self,channel=0,sample_beginning=0,sample_end=-1, frequency_beginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
+    def plot(self,channel=0,sampleBeginning=0,sampleEnd=-1, frequency_beginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
         """plot fourrier transform"""
-        #y = self.extract(channel,sample_beginning,sample_end)
+        #y = self.extract(channel,sampleBeginning,sampleEnd)
         try:
             xf, yf = self.fdata
         except AttributeError:
-            xf, yf = self.transform(channel, sample_beginning, sample_end, frequency_beginning, frequency_end)
+            xf, yf = self.transform(channel, sampleBeginning, sampleEnd, frequency_beginning, frequency_end)
 
         plt.plot(xf, np.abs(yf)) #absolute value of fourrier transform
         plt.grid()
         plt.show()
 
-    def findextrema(self,distance = 5,recalculateData = False,*args):
-        """if recalculateData, uses data from self.transform(*args), otherwise self.fdata
+    def findextrema(self,distance = 5,recalculateData = False,**kwargs):
+        """if recalculateData, uses data from self.transform(**kwargs), otherwise self.fdata
         returns:
             (xfPeaks, yfPeaks), dtype = np.array"""
 
         if recalculateData:
-            xf , yf = self.transform(*args)
+            xf , yf = self.transform(**kwargs)
         else:
             try:
                 xf, yf = self.fdata
             except AttributeError:
-                xf , yf = self.transform(*args)
+                xf , yf = self.transform(**kwargs)
         
         peaks, _ = find_peaks(yf, distance)    #indecies
 
@@ -155,12 +161,12 @@ class Translator(Transformator):
         #frequencyToNoteValue
         pass
 
-    def findMainFrequencies(self, number, *args):
-        """takes the data from self.findextrema(*args), and sorts it.
+    def findMainFrequencies(self, number, **kwargs):
+        """takes the data from self.findextrema(**kwargs), and sorts it.
         returns:
             (x, y) of the last [number] datapoints
         """
-        xUnsorted , yUnsorted = self.findextrema(*args)
+        xUnsorted , yUnsorted = self.findextrema(**kwargs)
 
         # There are different ways to do a Quick Sort partition, this implements the
         # Hoare partition scheme. Tony Hoare also created the Quick Sort algorithm.
