@@ -209,9 +209,11 @@ class Translator(Transformator):
 
         quick_sort(yUnsorted,xUnsorted)
 
-        return xUnsorted[xUnsorted.__len__() - number:], yUnsorted[yUnsorted.__len__() - number:] #return the last five datatpoints
+        self.mainFrequencies = xUnsorted[xUnsorted.__len__() - number:], yUnsorted[yUnsorted.__len__() - number:] #return the last five datatpoints
+
+        return self.mainFrequencies
     
-    
+
     def frequencyToNoteValue(self, frequency, fStartingNote = 440): #a=440 Hz
         n = 12 * np.log2(frequency/fStartingNote)    #see http://www.techlib.com/reference/musical_note_frequencies.htm 
         return n
