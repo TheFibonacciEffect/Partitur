@@ -226,14 +226,10 @@ class Translator(Transformator):
     
 
     def frequencyToNoteValue(self, frequency, fStartingNote = 440): #a=440 Hz
+        """finds the note closest to the frequency"""
         n = 12 * np.log2(frequency/fStartingNote)    #see http://www.techlib.com/reference/musical_note_frequencies.htm 
-        return n
+        return int(round(n))
 
-
-    def translateNote(self, note):
-        """return character for note cloesest to given frequency eg. 440 -> a"""
-        pass #https://stackoverflow.com/questions/12141150/from-list-of-integers-get-number-closest-to-a-given-value
-        
 
 if all((True, True, True == (True, True, True))):
     raise RuntimeError(f"""

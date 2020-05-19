@@ -3,11 +3,23 @@ from main import Extractor, Transformator, Translator
 import matplotlib.pyplot as plt
 import numpy as np
 
+sampleBeginning = 10
+sampleEnd = 12
+
 translator = Translator(r"ressources\Piano A.wav")
 
-plt.plot(*translator.transform(sampleBeginning = 10, sampleEnd = 12),"-")
-plt.plot(*translator.findMainFrequencies(2, sampleBeginning = 10, sampleEnd = 12),"x")
+mainFrequencies = translator.findMainFrequencies(2, sampleBeginning = sampleBeginning, sampleEnd = sampleEnd)
+
+plt.plot(*translator.transform(sampleBeginning = sampleBeginning, sampleEnd = sampleEnd),"-")
+plt.plot(*mainFrequencies,"x")
 
 plt.show()
-plt.plot(*translator.findMainFrequencies(2, sampleBeginningg=1, sampleEnd=2, frequencyBeginning = 0, frequency_end =  500, slicing=1, chunks = 1), 'x')
-plt.show()
+
+print(
+    translator.frequencyToNoteValue(fStartingNote = 440,    #prints the note value difference between an "a" (440Hz) and the played note 
+        frequency= mainFrequencies[0][0])) #first element of x-coorrdinate(frequencies)
+
+#if there is more then one note played, you can itterate over them:
+
+for i in range(len(mainFrequencies[0])):
+    print(translator.frequencyToNoteValue(mainFrequencies[0][i]))
