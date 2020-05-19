@@ -216,9 +216,13 @@ class Translator(Transformator):
 
         quick_sort(yUnsorted,xUnsorted)
 
-        self.mainFrequencies = xUnsorted[xUnsorted.__len__() - number:], yUnsorted[yUnsorted.__len__() - number:] #return the last five datatpoints
+        xSorted = np.flip(xUnsorted, -1)
+        ySorted = np.flip(yUnsorted, -1)
 
-        return self.mainFrequencies
+
+        mainFrequencies = xSorted[:number] , ySorted[:number] #return the last [number] datatpoints
+
+        return mainFrequencies
     
 
     def frequencyToNoteValue(self, frequency, fStartingNote = 440): #a=440 Hz
