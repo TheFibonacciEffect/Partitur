@@ -22,7 +22,6 @@ class Extractor:
             self.file = file.replace("\\", "/" )    #UNIX uses foreward slashes instead of backslashes
 
 
-
     def extract(self, channel = 0, sampleBeginning =0, sampleEnd = -1):
         """input: channel (mostly 1 or 0), sampleBeginning (seconds), sampleEnd (seconds)
         output: the data of the channel using a numphy array """
@@ -43,7 +42,6 @@ class Extractor:
             raise IndexError("starting and ending point are the same")
 
         return self.data
-
 
 
     def plot(self, channel = 0,sampleEnd = None, sampleBeginning = 0): #in seconds
@@ -67,6 +65,8 @@ class Extractor:
         plt.show()
 
 
+
+
 class Transformator(Extractor):
     """Fourrier transforms given data
     inherits from Extractor
@@ -77,9 +77,11 @@ class Transformator(Extractor):
     fields:
         fdata:  contains x and y coordinates of transformed data
     """
+
     def __init__(self, file):
         super().__init__(file)
-        
+
+
     def transform(self, frequencyBeginning = 300, frequency_end =  1000, recalculateData = True, **kwargs):
         """the fourrier transform gives a representation of the frequencies in the input array
         fourrier transforms given array, returns (xf,yf)
@@ -118,6 +120,7 @@ class Transformator(Extractor):
         self.fdata = xf, np.abs(yf)
         return self.fdata
 
+
     def plot(self,channel=0,sampleBeginning=0,sampleEnd=-1, frequencyBeginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
         """plot fourrier transform"""
         #y = self.extract(channel,sampleBeginning,sampleEnd)
@@ -129,6 +132,7 @@ class Transformator(Extractor):
         plt.plot(xf, np.abs(yf)) #absolute value of fourrier transform
         plt.grid()
         plt.show()
+
 
     def findextrema(self,distance = 5,recalculateData = False,**kwargs):
         """if recalculateData, uses data from self.transform(**kwargs), otherwise self.fdata
@@ -152,14 +156,17 @@ class Transformator(Extractor):
 
 
 
+
 class Translator(Transformator):
     """used to transform the extracted frequencies into Notes"""
     def __init__(self, file):
         super().__init__(file)
-    
+
+
     def translate(self, beginning, end):
         #frequencyToNoteValue
         pass
+
 
     def findMainFrequencies(self, number, **kwargs):
         """takes the data from self.findextrema(**kwargs), and sorts it.
@@ -217,6 +224,7 @@ class Translator(Transformator):
     def frequencyToNoteValue(self, frequency, fStartingNote = 440): #a=440 Hz
         n = 12 * np.log2(frequency/fStartingNote)    #see http://www.techlib.com/reference/musical_note_frequencies.htm 
         return n
+
 
     def translateNote(self, note):
         """return character for note cloesest to given frequency eg. 440 -> a"""
