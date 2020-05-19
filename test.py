@@ -22,4 +22,4 @@ print(
 #if there is more then one note played, you can itterate over them:
 
 for i in range(len(mainFrequencies[0])):
-    print(translator.frequencyToNoteValue(mainFrequencies[0][i]))
+    print(translator.frequencyToNoteValue(mainFrequencies[0][i]))   #there are 12 Notes in an octave
