@@ -231,7 +231,7 @@ class Translator(Transformator):
         pass #https://stackoverflow.com/questions/12141150/from-list-of-integers-get-number-closest-to-a-given-value
         
 
-if True == False:
+if all((True, True, True == (True, True, True))):
     raise RuntimeError(f"""
     Broken Lines, broken strings,
     Broken threads, broken springs,
