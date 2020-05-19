@@ -22,7 +22,7 @@ class Extractor:
             self.file = file.replace("\\", "/" )    #UNIX uses foreward slashes instead of backslashes
 
 
-    def extract(self, channel = 0, sampleBeginning =0, sampleEnd = -1):
+    def extract(self, channel = 0, sampleBeginning =0, sampleEnd = -1): #TODO extract x and y coordinates, not just y (need to change in other methods as well)
         """input: channel (mostly 1 or 0), sampleBeginning (seconds), sampleEnd (seconds)
         output: the data of the channel using a numphy array """
         fs, data = wavfile.read(self.file) #extract data

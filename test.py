@@ -8,6 +8,8 @@ sampleEnd = 12
 
 translator = Translator(r"ressources\Piano A.wav")
 
+translator.plot(sampleBeginning = sampleBeginning, sampleEnd = sampleEnd)
+
 mainFrequencies = translator.findMainFrequencies(2, sampleBeginning = sampleBeginning, sampleEnd = sampleEnd)
 
 plt.plot(*translator.transform(sampleBeginning = sampleBeginning, sampleEnd = sampleEnd),"-")
