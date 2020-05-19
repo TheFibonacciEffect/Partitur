@@ -20,5 +20,5 @@ A sound file is read, here an "a" note played by a piano
 ![a raw a note played by a piano](/images/piano_a.png)
 
 its fourrier transform extracts frequencies and marks the most important peaks, here one can see the 440Hz of an "a" and its overtone an octave higher
-![its fourrier transform extracts frequencies and marks the most important peaks, here one can see the 440Hz a and its overtone an octave higher](/images/transformed.png)
 
+![transform](/images/transformed.png)
