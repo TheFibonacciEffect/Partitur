@@ -82,7 +82,7 @@ class Transformator(Extractor):
         super().__init__(file)
 
 
-    def transform(self, frequencyBeginning = 300, frequency_end =  1000, recalculateData = True, **kwargs):
+    def transform(self, frequencyBeginning = 300, frequency_end =  1000, reReadData = True, **kwargs):
         """the fourrier transform gives a representation of the frequencies in the input array
         fourrier transforms given array, returns (xf,yf)
         slicing improves processing spead and memory usage
@@ -91,7 +91,7 @@ class Transformator(Extractor):
             yf: fourrier transform of input array"""
         
 
-        if recalculateData:
+        if reReadData:
             y = self.extract(**kwargs)
         else:
             try: 
