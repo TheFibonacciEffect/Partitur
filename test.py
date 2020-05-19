@@ -3,20 +3,25 @@ from main import Extractor, Transformator, Translator
 import matplotlib.pyplot as plt
 import numpy as np
 
-from scipy.io import wavfile
+sampleBeginning = 10
+sampleEnd = 12
 
-transform = Transformator(r"ressources\B flat Trupet.wav") #ressources\Piano A.wav
+translator = Translator(r"ressources\Piano A.wav")
 
-plt.plot(*transform.transform(sample_beginning=1, sample_end=2, frequency_beginning = 0, frequency_end =  500, slicing=1, chunks = 10))
-plt.plot(*transform.findextrema(), 'x')
+translator.plot(sampleBeginning = sampleBeginning, sampleEnd = sampleEnd)
+
+mainFrequencies = translator.findMainFrequencies(2, sampleBeginning = sampleBeginning, sampleEnd = sampleEnd)
+
+plt.plot(*translator.transform(sampleBeginning = sampleBeginning, sampleEnd = sampleEnd),"-")
+plt.plot(*mainFrequencies,"x")
+
 plt.show()
 
-# plt.plot(*transform.transform(sample_beginning=1, sample_end=1, frequency_beginning = 0, frequency_end =  4000, slicing=1, chunks = 10))
-# plt.plot(*transform.findextrema(), 'x')
+print(
+    translator.frequencyToNoteValue(fStartingNote = 440,    #prints the note value difference between an "a" (440Hz) and the played note 
+        frequency= mainFrequencies[0][0])) #first element of x-coorrdinate(frequencies)
 
-translator = Translator(r"ressources\B flat Trupet.wav") #ressources\60 Hz Test Tone-GqwFimG3X3w.wav
+#if there is more then one note played, you can itterate over them:
 
-plt.plot(*translator.transform(sample_beginning=1, sample_end=2, frequency_beginning = 0, frequency_end =  500, slicing=1, chunks = 10))
-#plt.plot(*translator.findextrema(), 'x')
-plt.plot(*translator.findMainFrequencies(5), 'x')
-plt.show()
+for i in range(len(mainFrequencies[0])):
+    print(translator.frequencyToNoteValue(mainFrequencies[0][i]))   #there are 12 Notes in an octave

@@ -15,10 +15,10 @@ execute the batch/ps/cmdlet/script found in ``.\music\Scripts\`` (whatever suits
 ## This is what it does so far
 
 
-You have an osszilation, some file that osszilates (obtained from a wav file using the Extractor)
+A sound file is read, here an "a" note played by a piano
 
-![a raw tone](/images/osszilation.png)
+![a raw a note played by a piano](/images/piano_a.png)
 
-...and you can extract it's frequecies using the Transformator (here 50 Hz and 80 Hz)
-![its fourrier transform extracts frequencies](/images/fourrier.png)
+its fourrier transform extracts frequencies and marks the most important peaks, here one can see the 440Hz of an "a" and its overtone an octave higher
 
+![transform](/images/transformed.png)
