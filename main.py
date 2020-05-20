@@ -91,7 +91,7 @@ class Transformator(Extractor):
             yf: fourrier transform of input array"""
         
         #be able to pass data to the method and have the optio to re-read the data
-        if False:#"data" in kwargs:    #TODO: I have no idea if this works
+        if "data" in kwargs:    #TODO: I have no idea if this works
             y = data
         else:
             if reReadData:
