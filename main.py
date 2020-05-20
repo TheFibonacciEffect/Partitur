@@ -90,20 +90,25 @@ class Transformator(Extractor):
             xf: x coordinate linspace
             yf: fourrier transform of input array"""
         
-
-        if reReadData:
-            y = self.extract(**kwargs)
+        #be able to pass data to the method and have the optio to re-read the data
+        if data in **kwargs:
+            y = data
         else:
-            try: 
-                y = self.data
-            except AttributeError:
+            if reReadData:
                 y = self.extract(**kwargs)
+            else:
+                try: 
+                    y = self.data
+                except AttributeError:
+                    y = self.extract(**kwargs)
+
 
         N = y.__len__()
 
         #TODO the chunking scales down the transform. This dosn't work.
         #chunk data & generate np.array
 
+        #Come back and increment this number after you attempt to optimize this resource-heavy function and fail: 3
         yf = fft(y, overwrite_x=True)
 
         T = 1.0 / self.samplesPerSecond
