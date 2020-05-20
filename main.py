@@ -113,15 +113,15 @@ class Transformator(Extractor):
 
         T = 1.0 / self.samplesPerSecond
         frequencyBeginningIndex = int(frequencyBeginning*T*N)
-        frequency_endIndex = int(frequency_end*T*N)
-        yf = yf[frequencyBeginningIndex:frequency_endIndex]
+        frequencyEndIndex = int(frequencyEnd*T*N)
+        yf = yf[frequencyBeginningIndex:frequencyEndIndex]
         N = yf.__len__()
 
         if all(flag == 0 for flag in yf):
             raise LookupError(f"""the array is empty (it only contains zeros) you need to determine a different beginning and end for the frequency
         here is the array: {yf} it's length is {yf.__len__()}, its shape is {yf.shape}""")
 
-        xf = np.linspace(frequencyBeginning, frequency_end, N)
+        xf = np.linspace(frequencyBeginning, frequencyEnd, N)
         self.fdata = xf, np.abs(yf)
         return self.fdata
 
