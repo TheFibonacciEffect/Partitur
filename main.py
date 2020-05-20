@@ -140,7 +140,7 @@ class Transformator(Extractor):
 
 
     def findextrema(self,distance = 5,recalculateData = False,**kwargs):
-        """if recalculateData, uses data from self.transform(**kwargs), otherwise self.fdata
+        """
         inherited arguments:
             from transform:
                 frequencyBeginning = 300, frequency_end =  1000, reReadData = True, (data),
@@ -148,6 +148,7 @@ class Transformator(Extractor):
                 channel = 0, sampleBeginning =0, sampleEnd = -1
         returns:
             (xfPeaks, yfPeaks), dtype = np.array
+        if recalculateData, uses data from self.transform(**kwargs), otherwise self.fdata
             """
 
         if recalculateData:
