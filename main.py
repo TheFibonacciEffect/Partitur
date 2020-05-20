@@ -186,17 +186,13 @@ class Translator(Transformator):
         inherited arguments:
         
             from findextrema:
-        
                 distance = 5,recalculateData = False
             from transform:
-        
-                frequencyBeginning = 300, frequency_end =  1000, reReadData = True, (data),
-        
+                frequencyBeginning = 300, frequencyEnd =  1000, reReadData = True, (data),
             from extract:
-        
                 channel = 0, sampleBeginning =0, sampleEnd = -1
+
         returns:
-        
             (x, y) of the last [number] datapoints
         """
         xUnsorted , yUnsorted = self.findextrema(**kwargs)
