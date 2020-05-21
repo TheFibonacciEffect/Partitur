@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import find_peaks
 from os.path import isfile
+from coloredOutput import style
 
 class Extractor:
     """class used to extract a numpy array from a .wav file
@@ -92,8 +93,10 @@ class Transformator(Extractor):
         
         #be able to pass data to the method and have the optio to re-read the data
         if "data" in kwargs:    #TODO: I have no idea if this works
-            y = data
+            y = kwargs["data"]  #TODO this only gets parsed once and then no more
+            print(style.YELLOW + f"data len in the transform: {y.__len__()}" + style.RESET)
         else:
+            print(style.GREEN + f"data is not in transform" + style.RESET)
             if reReadData:
                 y = self.extract(**kwargs)
             else:
@@ -109,7 +112,7 @@ class Transformator(Extractor):
         #chunk data & generate np.array
 
         #Come back and increment this number after you attempt to optimize this resource-heavy function and fail: 3
-        yf = fft(y, overwrite_x=True)
+        yf = fft(y, overwrite_x=True, workers=1)
 
         T = 1.0 / self.samplesPerSecond
         frequencyBeginningIndex = int(frequencyBeginning*T*N)
@@ -120,7 +123,7 @@ class Transformator(Extractor):
         if all(flag == 0 for flag in yf):
             raise LookupError(f"""the array is empty (it only contains zeros) you need to determine a different beginning and end for the frequency
         here is the array: {yf} it's length is {yf.__len__()}, its shape is {yf.shape}""")
-
+        print(f"fourrier transformed data lenght: {len(yf)}")
         xf = np.linspace(frequencyBeginning, frequencyEnd, N)
         self.fdata = xf, np.abs(yf)
         return self.fdata
@@ -158,7 +161,7 @@ class Transformator(Extractor):
                 xf, yf = self.fdata
             except AttributeError:
                 xf , yf = self.transform(**kwargs)
-        
+        print(f"fourrier transform: {yf}")
         peaks, _ = find_peaks(yf, distance)    #indecies
 
         xfPeaks = xf[peaks]
@@ -188,7 +191,7 @@ class Translator(Transformator):
             from findextrema:
                 distance = 5,recalculateData = False
             from transform:
-                frequencyBeginning = 300, frequencyEnd =  1000, reReadData = True, (data),
+                frequencyBeginning = 300, frequencyEnd =  1000, reReadData = True, (data)
             from extract:
                 channel = 0, sampleBeginning =0, sampleEnd = -1
 
@@ -197,6 +200,7 @@ class Translator(Transformator):
         """
         xUnsorted , yUnsorted = self.findextrema(**kwargs)
 
+        print(f"unsorted data from findextrema{xUnsorted}")
         # There are different ways to do a Quick Sort partition, this implements the
         # Hoare partition scheme. Tony Hoare also created the Quick Sort algorithm.
         def partition(y, x, low, high):
