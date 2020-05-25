@@ -5,7 +5,6 @@ import concurrent.futures
 if __name__ == '__main__':
     with concurrent.futures.ProcessPoolExecutor(1) as executor:
         m = Main(r"ressources\Piano A.wav")
-        print("cheese")
 
         splitLengthinSeconds = 3
         song = m.split(splitLengthinSeconds, sampleBeginning = 0, sampleEnd = -1)

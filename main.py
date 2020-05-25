@@ -217,7 +217,6 @@ class Translator():
 class Main(Extractor, Translator, Transformator):
     def __init__(self, file):
         Extractor.__init__(self, file=file)  #TODO initiate multi inherited class
-        print(self.file)
     def _thread(self, data):
         """
         generator object
@@ -228,8 +227,6 @@ class Main(Extractor, Translator, Transformator):
         NUMBER_OF_NOTES = 3
         transform = self.transform( y=data, frequencyBeginning = 300, frequencyEnd =  1000)
         mainFrequencies = self.findMainFrequencies(NUMBER_OF_NOTES, *self.findextrema(*transform, distance = 5))
-
-        # print(f"main Frequencies: {mainFrequencies}")
         for i in mainFrequencies[0]:
             note = self.frequencyToNoteValue(i)
             yield note
