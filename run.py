@@ -3,7 +3,7 @@ import concurrent.futures
 
 
 if __name__ == '__main__':
-    with concurrent.futures.ProcessPoolExecutor(1) as executor:
+    with concurrent.futures.ProcessPoolExecutor() as executor:
         m = Main(r"ressources\Piano A.wav")
 
         splitLengthinSeconds = 3
