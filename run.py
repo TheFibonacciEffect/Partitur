@@ -1,12 +1,11 @@
 from main import Main
 import concurrent.futures 
 
-
 if __name__ == '__main__':
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        m = Main(r"ressources\Piano A.wav")
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        m = Main(r"ressources\thegodfather.wav") #ressources\Piano A.wav
 
-        splitLengthinSeconds = 3
+        splitLengthinSeconds = 0.5
         # multiprocessing
         song = m.split(splitLengthinSeconds, sampleBeginning = 0, sampleEnd = -1)
 
