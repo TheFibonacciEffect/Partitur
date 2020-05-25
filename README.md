@@ -25,3 +25,5 @@ A sound file is read, here an "a" note played by a piano
 its fourrier transform extracts frequencies and marks the most important peaks, here one can see the 440Hz of an "a" and its overtone an octave higher
 
 ![transform](/images/transformed.png)
+
+This will output `[ [0, 12] ]` which means that the first played note is 0 halftone steps away from the pure `a` and the second played note is 12 halftone steps away from the "a" which is an entire octave. This means that the second played note is an `a'` and indeed it is, since `a'` is the overtone of the `a`.
