@@ -3,7 +3,7 @@ import concurrent.futures
 
 if __name__ == '__main__':
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        m = Main(r"ressources\thegodfather.wav") #ressources\Piano A.wav
+        m = Main(r"ressources\Recording.wav") #ressources\Piano A.wav
 
         splitLengthinSeconds = 0.5
         # multiprocessing
