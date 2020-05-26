@@ -111,20 +111,6 @@ class Transformator():
         N = yf.__len__()
         xf = np.linspace(frequencyBeginning, frequencyEnd, N)
         return xf, np.abs(yf)
-        
-
-
-    # def fplot(self,channel=0,sampleBeginning=0,sampleEnd=-1, frequencyBeginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
-    #     """plot fourrier transform"""
-    #     #y = self.extract(channel,sampleBeginning,sampleEnd)
-    #     try:
-    #         xf, yf = self.fdata
-    #     except AttributeError:
-    #         xf, yf = self.transform(channel, sampleBeginning, sampleEnd, frequencyBeginning, frequency_end)
-
-    #     plt.plot(xf, np.abs(yf)) #absolute value of fourrier transform
-    #     plt.grid()
-    #     plt.show()
 
 
     def findextrema(self, xf, yf,distance = 5,**kwargs):
