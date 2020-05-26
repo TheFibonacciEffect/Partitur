@@ -30,7 +30,7 @@ class Extractor:
         else:
             self.file = file
             
-    def extract(self, channel = 0, sampleBeginning =0, sampleEnd = -1): #TODO extract x and y coordinates, not just y (need to change in other methods as well)
+    def extract(self, channel = 0, sampleBeginning =0, sampleEnd = -1):
         """input: channel (mostly 1 or 0), sampleBeginning (seconds), sampleEnd (seconds)
         output: the data of the channel using a numphy array """
         fs, data = wavfile.read(self.file) #extract data
@@ -100,8 +100,6 @@ class Transformator():
 
         N = y.__len__()
 
-        #TODO the chunking scales down the transform. This dosn't work.
-        #chunk data & generate np.array
 
         #Come back and increment this number after you attempt to optimize this resource-heavy function and fail: 3
         yf = fft(y, overwrite_x=True, workers=1)
@@ -207,7 +205,6 @@ class Translator():
         xSorted = list(np.flip(xUnsorted, -1))[:number]
         ySorted = list(np.flip(yUnsorted, -1))[:number]
 
-            #TODO implement threshold 
         #if the peak is lower than 2/3 of the highest peak, delete it
         i = 0
         while i < len(ySorted):
@@ -243,12 +240,11 @@ class Translator():
         key = ["a", "b", "h", "c", "cis", "d", "dis", "e", "f", "fis",  "g", "gis"]
         
         return [ [key[i % len(key)] for i in sorted(triad)] for triad in data ]
-    #TODO display note names
 
 
 class Main(Extractor, Translator, Transformator):
     def __init__(self, file):
-        Extractor.__init__(self, file=file)  #TODO initiate multi inherited class
+        Extractor.__init__(self, file=file)
     def _thread(self, data):
         """
         generator object
@@ -272,7 +268,7 @@ class Main(Extractor, Translator, Transformator):
         data = self.extract(channel, sampleBeginning, sampleEnd)
 
         numberOfSplits= int(round(self.lenght / (self.samplesPerSecond * splitLengthInSeconds)))
-        print(f"numberOfSplits: {numberOfSplits}")  #TODO the number of splits dosnt seem to change with the split lenght
+        print(f"numberOfSplits: {numberOfSplits}")
         return np.array_split(data, indices_or_sections= numberOfSplits )
 
     def thread(self, *args):
