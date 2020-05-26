@@ -24,9 +24,9 @@ class Extractor:
             file = file.replace("\\", "/" )    #UNIX uses foreward slashes instead of backslashes
 
         #if it is not a wavfile, transform it using ffmpeg (not yet tested, TODO)
-        if file[-3:] != ".wav":
-            os.system(f"ffmpeg -i {file} {file[:-3]}.wav")
-            self.file = {file[:-3]}.wav
+        if file[-4:] != ".wav":
+            os.system(f"ffmpeg -i {file} {file[:-4]}.wav")
+            self.file = {file[:-4]} +".wav"
         else:
             self.file = file
             
