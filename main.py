@@ -36,7 +36,6 @@ class Extractor:
         fs, data = wavfile.read(self.file) #extract data
         self.data = data
         self.samplesPerSecond = fs
-        self.lenght = len(data)
         sampleBeginning, sampleEnd = int(sampleBeginning * self.samplesPerSecond), int(sampleEnd * self.samplesPerSecond)
         self.data = self.data[:,channel][sampleBeginning:sampleEnd]
 
@@ -50,6 +49,7 @@ class Extractor:
         if sampleBeginning == sampleEnd:
             raise IndexError("starting and ending point are the same")
 
+        self.lenghth = len(self.data)
         return self.data
 
 
@@ -250,11 +250,13 @@ class Main(Extractor, Translator, Transformator):
             yield note
 
     def split(self, splitLengthInSeconds, sampleBeginning, sampleEnd, channel = 0):
-
+        #TODO this is wrong
 
         data = self.extract(channel, sampleBeginning, sampleEnd)
 
-        numberOfSplits= int(round(self.lenght / (self.samplesPerSecond * splitLengthInSeconds)))
+        lenghthInSec = self.lenghth / self.samplesPerSecond
+        print(f"lenghth in sec: {lenghthInSec}")
+        numberOfSplits= int(round(lenghthInSec / splitLengthInSeconds))
         print(f"numberOfSplits: {numberOfSplits}")
         return np.array_split(data, indices_or_sections= numberOfSplits )
 
