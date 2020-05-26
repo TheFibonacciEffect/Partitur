@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import find_peaks
 from os.path import isfile
+from coloredOutput import style
+import os
 
 class Extractor:
     """class used to extract a numpy array from a .wav file
@@ -17,17 +19,24 @@ class Extractor:
     """
     def __init__(self, file):
         if isfile(file):
-            self.file = file
+            pass    
         else:
-            self.file = file.replace("\\", "/" )    #UNIX uses foreward slashes instead of backslashes
+            file = file.replace("\\", "/" )    #UNIX uses foreward slashes instead of backslashes
 
-
+        #if it is not a wavfile, transform it using ffmpeg (not yet tested, TODO)
+        if file[-4:] != ".wav":
+            os.system(f"ffmpeg -i {file} {file[:-4]}.wav")
+            self.file = {file[:-4]} +".wav"
+        else:
+            self.file = file
+            
     def extract(self, channel = 0, sampleBeginning =0, sampleEnd = -1): #TODO extract x and y coordinates, not just y (need to change in other methods as well)
         """input: channel (mostly 1 or 0), sampleBeginning (seconds), sampleEnd (seconds)
         output: the data of the channel using a numphy array """
         fs, data = wavfile.read(self.file) #extract data
         self.data = data
         self.samplesPerSecond = fs
+        self.lenght = len(data)
         sampleBeginning, sampleEnd = int(sampleBeginning * self.samplesPerSecond), int(sampleEnd * self.samplesPerSecond)
         self.data = self.data[:,channel][sampleBeginning:sampleEnd]
 
@@ -67,7 +76,7 @@ class Extractor:
 
 
 
-class Transformator(Extractor):
+class Transformator():
     """Fourrier transforms given data
     inherits from Extractor
     methods:
@@ -78,30 +87,16 @@ class Transformator(Extractor):
         fdata:  contains x and y coordinates of transformed data
     """
 
-    def __init__(self, file):
-        super().__init__(file)
+    def __init__(self):
+        pass
 
-
-    def transform(self, frequencyBeginning = 300, frequencyEnd =  1000, reReadData = True, **kwargs):
+    def transform(self, y, frequencyBeginning = 300, frequencyEnd =  1000, **kwargs):
         """the fourrier transform gives a representation of the frequencies in the input array
         fourrier transforms given array, returns (xf,yf)
         slicing improves processing spead and memory usage
         returns:
             xf: x coordinate linspace
             yf: fourrier transform of input array"""
-        
-        #be able to pass data to the method and have the optio to re-read the data
-        if "data" in kwargs:    #TODO: I have no idea if this works
-            y = data
-        else:
-            if reReadData:
-                y = self.extract(**kwargs)
-            else:
-                try: 
-                    y = self.data
-                except AttributeError:
-                    y = self.extract(**kwargs)
-
 
         N = y.__len__()
 
@@ -109,55 +104,38 @@ class Transformator(Extractor):
         #chunk data & generate np.array
 
         #Come back and increment this number after you attempt to optimize this resource-heavy function and fail: 3
-        yf = fft(y, overwrite_x=True)
+        yf = fft(y, overwrite_x=True, workers=1)
 
         T = 1.0 / self.samplesPerSecond
         frequencyBeginningIndex = int(frequencyBeginning*T*N)
         frequencyEndIndex = int(frequencyEnd*T*N)
         yf = yf[frequencyBeginningIndex:frequencyEndIndex]
         N = yf.__len__()
+        xf = np.linspace(frequencyBeginning, frequencyEnd, N)
+        return xf, np.abs(yf)
+        
+
+
+    # def fplot(self,channel=0,sampleBeginning=0,sampleEnd=-1, frequencyBeginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
+    #     """plot fourrier transform"""
+    #     #y = self.extract(channel,sampleBeginning,sampleEnd)
+    #     try:
+    #         xf, yf = self.fdata
+    #     except AttributeError:
+    #         xf, yf = self.transform(channel, sampleBeginning, sampleEnd, frequencyBeginning, frequency_end)
+
+    #     plt.plot(xf, np.abs(yf)) #absolute value of fourrier transform
+    #     plt.grid()
+    #     plt.show()
+
+
+    def findextrema(self, xf, yf,distance = 5,**kwargs):
+        """
+        returns: (xfPeaks, yfPeaks), dtype = np.array
+        """
 
         if all(flag == 0 for flag in yf):
-            raise LookupError(f"""the array is empty (it only contains zeros) you need to determine a different beginning and end for the frequency
-        here is the array: {yf} it's length is {yf.__len__()}, its shape is {yf.shape}""")
-
-        xf = np.linspace(frequencyBeginning, frequencyEnd, N)
-        self.fdata = xf, np.abs(yf)
-        return self.fdata
-
-
-    def fplot(self,channel=0,sampleBeginning=0,sampleEnd=-1, frequencyBeginning = 55, frequency_end =  65): #Low C = 130 Hz middle c = 261 Hz, a' = 440 Hz, c'' = 532 Hz
-        """plot fourrier transform"""
-        #y = self.extract(channel,sampleBeginning,sampleEnd)
-        try:
-            xf, yf = self.fdata
-        except AttributeError:
-            xf, yf = self.transform(channel, sampleBeginning, sampleEnd, frequencyBeginning, frequency_end)
-
-        plt.plot(xf, np.abs(yf)) #absolute value of fourrier transform
-        plt.grid()
-        plt.show()
-
-
-    def findextrema(self,distance = 5,recalculateData = False,**kwargs):
-        """
-        inherited arguments:
-            from transform:
-                frequencyBeginning = 300, frequency_end =  1000, reReadData = True, (data),
-            from extract:
-                channel = 0, sampleBeginning =0, sampleEnd = -1
-        returns:
-            (xfPeaks, yfPeaks), dtype = np.array
-        if recalculateData, uses data from self.transform(**kwargs), otherwise self.fdata
-            """
-
-        if recalculateData:
-            xf , yf = self.transform(**kwargs)
-        else:
-            try:
-                xf, yf = self.fdata
-            except AttributeError:
-                xf , yf = self.transform(**kwargs)
+            return [0],[0]
         
         peaks, _ = find_peaks(yf, distance)    #indecies
 
@@ -169,33 +147,21 @@ class Transformator(Extractor):
 
 
 
-class Translator(Transformator):
+class Translator():
     """used to transform the extracted frequencies into Notes"""
-    def __init__(self, file):
-        super().__init__(file)
-
+    def __init__(self):
+        pass
 
     def translate(self, beginning, end):
         #frequencyToNoteValue
         pass
 
 
-    def findMainFrequencies(self, number, **kwargs):
-        """takes the data from self.findextrema(**kwargs), and sorts it.
-
-        inherited arguments:
-        
-            from findextrema:
-                distance = 5,recalculateData = False
-            from transform:
-                frequencyBeginning = 300, frequencyEnd =  1000, reReadData = True, (data),
-            from extract:
-                channel = 0, sampleBeginning =0, sampleEnd = -1
-
-        returns:
+    def findMainFrequencies(self, xUnsorted , yUnsorted, threshhold = 1/3, number = 6, **kwargs):
+        """returns:
             (x, y) of the last [number] datapoints
         """
-        xUnsorted , yUnsorted = self.findextrema(**kwargs)
+        xUnsorted , yUnsorted
 
         # There are different ways to do a Quick Sort partition, this implements the
         # Hoare partition scheme. Tony Hoare also created the Quick Sort algorithm.
@@ -238,21 +204,76 @@ class Translator(Transformator):
 
         quick_sort(yUnsorted,xUnsorted)
 
-        xSorted = np.flip(xUnsorted, -1)
-        ySorted = np.flip(yUnsorted, -1)
+        xSorted = list(np.flip(xUnsorted, -1))[:number]
+        ySorted = list(np.flip(yUnsorted, -1))[:number]
 
+            #TODO implement threshold 
+        #if the peak is lower than 2/3 of the highest peak, delete it
+        i = 0
+        while i < len(ySorted):
+            if ySorted[i] < ySorted[0]* threshhold:
+                del ySorted[i]
+                del xSorted[i]
+            else:
+                i += 1
 
-        mainFrequencies = xSorted[:number] , ySorted[:number] #return the last [number] datatpoints
+        mainFrequencies = xSorted , ySorted #return the first [number] datatpoints
 
         return mainFrequencies
     
 
     def frequencyToNoteValue(self, frequency, fStartingNote = 440): #a=440 Hz
         """finds the note closest to the frequency"""
+        if frequency == 0:
+            return None
         n = 12 * np.log2(frequency/fStartingNote)    #see http://www.techlib.com/reference/musical_note_frequencies.htm 
         return int(round(n))
 
 
+class Main(Extractor, Translator, Transformator):
+    def __init__(self, file):
+        Extractor.__init__(self, file=file)  #TODO initiate multi inherited class
+    def _thread(self, data):
+        """
+        generator object
+        input a song or a part of it
+        used to implement a method for a ProcessPoolExecutor map(..)
+        this is a convenience wrapper that brings together the different superclass methods
+        returns:
+            notes in the form of [[triad], [triad]...]
+        """
+        threshhold = 1/3
+        NUMBER_OF_NOTES = 6
+        transform = self.transform( y=data, frequencyBeginning = 300, frequencyEnd =  1000)
+        mainFrequencies = self.findMainFrequencies(*self.findextrema(*transform, distance = 5), threshhold=threshhold, number=NUMBER_OF_NOTES )
+        for i in mainFrequencies[0]:
+            note = self.frequencyToNoteValue(i)
+            yield note
+
+    def split(self, splitLengthInSeconds, sampleBeginning, sampleEnd, channel = 0):
+
+
+        data = self.extract(channel, sampleBeginning, sampleEnd)
+
+        splitLengthInSeconds = 1
+        numberOfSplits= int(round(self.lenght / (self.samplesPerSecond * splitLengthInSeconds)))
+        print(f"numberOfSplits: {numberOfSplits}")  #TODO the number of splits dosnt seem to change with the split lenght
+        return np.array_split(data, indices_or_sections= numberOfSplits )
+
+    def thread(self, *args):
+        """turns the _thread genrerator obj. into a list""" 
+        return list(self._thread(*args))
+
+    def main(self, chanel, sampleBeginning, sampleEnd, frequencyBeginning, frequencyEnd, distance, number, threshhold, fStartingNote = 440):
+        self.values = self.extract(chanel, sampleBeginning, sampleEnd)
+        self.xvalues = np.arange(sampleBeginning, sampleEnd, 1/self.samplesPerSecond)
+        self.fvalues_xy = self.transform(self.values, frequencyBeginning, frequencyEnd)
+        self.extrema = self.findextrema(*self.fvalues_xy, distance)
+        self.mainFrequencies = self.findMainFrequencies(*self.extrema,threshhold, number)
+        self.notes = list(map(lambda x: self.frequencyToNoteValue(x, fStartingNote), self.mainFrequencies[0]))
+        return self.notes
+
+    
 if all((True, True, True == (True, True, True))):
     raise RuntimeError(f"""
     Broken Lines, broken strings,

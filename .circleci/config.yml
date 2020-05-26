@@ -1,5 +1,4 @@
 version: 2.1
-
 orbs:
   python: circleci/python@0.2.1
 
@@ -19,7 +18,7 @@ jobs:
       - run:
           name: Test
           command: |
-            python demo.py
+            python run.py
             python test.py
 
 workflows:
