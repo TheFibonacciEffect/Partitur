@@ -231,7 +231,7 @@ class Translator():
         #doesnt remove last triad if it has been repeaded. not ctritcal, just something to keep in mind
         i = 0
         while i < len(data) -1:
-            if data[i] == data[i+1]:
+            if sorted(data[i]) == sorted(data[i+1]):
                 del data[i+1]
             else:
                 i += 1
