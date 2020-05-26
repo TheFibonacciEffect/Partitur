@@ -5,6 +5,7 @@ import numpy as np
 from scipy.signal import find_peaks
 from os.path import isfile
 from coloredOutput import style
+import os
 
 class Extractor:
     """class used to extract a numpy array from a .wav file
@@ -18,11 +19,17 @@ class Extractor:
     """
     def __init__(self, file):
         if isfile(file):
-            self.file = file
+            pass    
         else:
-            self.file = file.replace("\\", "/" )    #UNIX uses foreward slashes instead of backslashes
+            file = file.replace("\\", "/" )    #UNIX uses foreward slashes instead of backslashes
 
-
+        #if it is not a wavfile, transform it using ffmpeg (not yet tested, TODO)
+        if file[-3:] != ".wav":
+            os.system(f"ffmpeg -i {file} {file[:-3]}.wav")
+            self.file = {file[:-3]}.wav
+        else:
+            self.file = file
+            
     def extract(self, channel = 0, sampleBeginning =0, sampleEnd = -1): #TODO extract x and y coordinates, not just y (need to change in other methods as well)
         """input: channel (mostly 1 or 0), sampleBeginning (seconds), sampleEnd (seconds)
         output: the data of the channel using a numphy array """
@@ -223,6 +230,8 @@ class Main(Extractor, Translator, Transformator):
         input a song or a part of it
         used to implement a method for a ProcessPoolExecutor map(..)
         this is a convenience wrapper that brings together the different superclass methods
+        returns:
+            notes in the form of [[triad], [triad]...]
         """
         NUMBER_OF_NOTES = 3
         transform = self.transform( y=data, frequencyBeginning = 300, frequencyEnd =  1000)
@@ -251,7 +260,8 @@ class Main(Extractor, Translator, Transformator):
         self.fvalues_xy = self.transform(self.values, frequencyBeginning, frequencyEnd)
         self.extrema = self.findextrema(*self.fvalues_xy, distance)
         self.mainFrequencies = self.findMainFrequencies(number, *self.extrema)
-        self.notes = tuple(map(lambda x: self.frequencyToNoteValue(x, fStartingNote), self.mainFrequencies[0]))
+        self.notes = list(map(lambda x: self.frequencyToNoteValue(x, fStartingNote), self.mainFrequencies[0]))
+        return self.notes
 
     
 if all((True, True, True == (True, True, True))):
