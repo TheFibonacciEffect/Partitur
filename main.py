@@ -18,6 +18,9 @@ class Extractor:
         plot(), plots it uning the matplotlib    
     """
     def __init__(self, file):
+        
+        file = file.strip("\"")
+
         if isfile(file):
             pass    
         else:
@@ -25,8 +28,11 @@ class Extractor:
 
         #if it is not a wavfile, transform it using ffmpeg (not yet tested, TODO)
         if file[-4:] != ".wav":
-            os.system(f"ffmpeg -i {file} {file[:-4]}.wav")
-            self.file = {file[:-4]} +".wav"
+            os.system(f'ffmpeg -i "{file}" "{file[:-4]}.wav"')
+            
+            print(file)
+            self.file = file[:-4]+".wav"
+            print(self.file)
         else:
             self.file = file
             
@@ -191,7 +197,7 @@ class Translator():
         xSorted = list(np.flip(xUnsorted, -1))[:number]
         ySorted = list(np.flip(yUnsorted, -1))[:number]
 
-        #if the peak is lower than 2/3 of the highest peak, delete it
+        #if the peak is lower than 2/3 of the highest peak, or so low it could be noise, delete it
         noise = 1000000
         i = 0
         while i < len(ySorted):
