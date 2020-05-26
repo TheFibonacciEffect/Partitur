@@ -157,7 +157,7 @@ class Translator():
         pass
 
 
-    def findMainFrequencies(self, number, xUnsorted , yUnsorted, **kwargs):
+    def findMainFrequencies(self, xUnsorted , yUnsorted, threshhold = 1/3, number = 6, **kwargs):
         """returns:
             (x, y) of the last [number] datapoints
         """
@@ -204,11 +204,20 @@ class Translator():
 
         quick_sort(yUnsorted,xUnsorted)
 
-        xSorted = np.flip(xUnsorted, -1)
-        ySorted = np.flip(yUnsorted, -1)
+        xSorted = list(np.flip(xUnsorted, -1))[:number]
+        ySorted = list(np.flip(yUnsorted, -1))[:number]
 
+            #TODO implement threshold 
+        #if the peak is lower than 2/3 of the highest peak, delete it
+        i = 0
+        while i < len(ySorted):
+            if ySorted[i] < ySorted[0]* threshhold:
+                del ySorted[i]
+                del xSorted[i]
+            else:
+                i += 1
 
-        mainFrequencies = xSorted[:number] , ySorted[:number] #return the first [number] datatpoints
+        mainFrequencies = xSorted , ySorted #return the first [number] datatpoints
 
         return mainFrequencies
     
@@ -233,9 +242,10 @@ class Main(Extractor, Translator, Transformator):
         returns:
             notes in the form of [[triad], [triad]...]
         """
-        NUMBER_OF_NOTES = 3
+        threshhold = 1/3
+        NUMBER_OF_NOTES = 6
         transform = self.transform( y=data, frequencyBeginning = 300, frequencyEnd =  1000)
-        mainFrequencies = self.findMainFrequencies(NUMBER_OF_NOTES, *self.findextrema(*transform, distance = 5))
+        mainFrequencies = self.findMainFrequencies(*self.findextrema(*transform, distance = 5), threshhold=threshhold, number=NUMBER_OF_NOTES )
         for i in mainFrequencies[0]:
             note = self.frequencyToNoteValue(i)
             yield note
@@ -254,12 +264,12 @@ class Main(Extractor, Translator, Transformator):
         """turns the _thread genrerator obj. into a list""" 
         return list(self._thread(*args))
 
-    def main(self, chanel, sampleBeginning, sampleEnd, frequencyBeginning, frequencyEnd, distance, number, fStartingNote = 440):
+    def main(self, chanel, sampleBeginning, sampleEnd, frequencyBeginning, frequencyEnd, distance, number, threshhold, fStartingNote = 440):
         self.values = self.extract(chanel, sampleBeginning, sampleEnd)
         self.xvalues = np.arange(sampleBeginning, sampleEnd, 1/self.samplesPerSecond)
         self.fvalues_xy = self.transform(self.values, frequencyBeginning, frequencyEnd)
         self.extrema = self.findextrema(*self.fvalues_xy, distance)
-        self.mainFrequencies = self.findMainFrequencies(number, *self.extrema)
+        self.mainFrequencies = self.findMainFrequencies(*self.extrema,threshhold, number)
         self.notes = list(map(lambda x: self.frequencyToNoteValue(x, fStartingNote), self.mainFrequencies[0]))
         return self.notes
 
