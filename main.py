@@ -255,7 +255,6 @@ class Main(Extractor, Translator, Transformator):
 
         data = self.extract(channel, sampleBeginning, sampleEnd)
 
-        splitLengthInSeconds = 1
         numberOfSplits= int(round(self.lenght / (self.samplesPerSecond * splitLengthInSeconds)))
         print(f"numberOfSplits: {numberOfSplits}")  #TODO the number of splits dosnt seem to change with the split lenght
         return np.array_split(data, indices_or_sections= numberOfSplits )
@@ -270,7 +269,7 @@ class Main(Extractor, Translator, Transformator):
         self.fvalues_xy = self.transform(self.values, frequencyBeginning, frequencyEnd)
         self.extrema = self.findextrema(*self.fvalues_xy, distance)
         self.mainFrequencies = self.findMainFrequencies(*self.extrema,threshhold, number)
-        self.notes = list(map(lambda x: self.frequencyToNoteValue(x, fStartingNote), self.mainFrequencies[0]))
+        self.notes = [list(map(lambda x: self.frequencyToNoteValue(x, fStartingNote), self.mainFrequencies[0]))]
         return self.notes
 
     
