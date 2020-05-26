@@ -229,6 +229,22 @@ class Translator():
         n = 12 * np.log2(frequency/fStartingNote)    #see http://www.techlib.com/reference/musical_note_frequencies.htm 
         return int(round(n))
 
+    def removeRepetitions(self, data):
+        #doesnt remove last triad if it has been repeaded. not ctritcal, just something to keep in mind
+        i = 0
+        while i < len(data) -1:
+            if data[i] == data[i+1]:
+                del data[i+1]
+            else:
+                i += 1
+        return data
+    
+    def noteNames(self, data):
+        key = ["a", "b", "h", "c", "cis", "d", "dis", "e", "f", "fis",  "g", "gis"]
+        
+        return [ [key[i % len(key)] for i in sorted(triad)] for triad in data ]
+    #TODO display note names
+
 
 class Main(Extractor, Translator, Transformator):
     def __init__(self, file):

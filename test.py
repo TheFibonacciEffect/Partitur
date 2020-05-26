@@ -29,4 +29,8 @@ plt.plot(*m.mainFrequencies, "o")
 #plt.xscale("log")
 plt.show()
 
-print(m.notes)
+notes = m.notes
+print(notes)
+notes = m.removeRepetitions(notes)
+notes = m.noteNames(notes)
+print(notes)
