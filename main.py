@@ -206,9 +206,10 @@ class Translator():
         ySorted = list(np.flip(yUnsorted, -1))[:number]
 
         #if the peak is lower than 2/3 of the highest peak, delete it
+        noise = 1000000
         i = 0
         while i < len(ySorted):
-            if ySorted[i] < ySorted[0]* threshhold:
+            if ySorted[i] < ySorted[0]* threshhold or ySorted[i] <noise:
                 del ySorted[i]
                 del xSorted[i]
             else:
