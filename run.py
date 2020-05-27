@@ -1,13 +1,15 @@
 from main import Main
 import concurrent.futures 
 
+
+file = input("file: ")
 if __name__ == '__main__':
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        m = Main(r"ressources\thegodfather.wav") #ressources\Recording.wav
+        m = Main(file)
 
-        splitLengthinSeconds = 0.5
-        # multiprocessing
-        song = m.split(splitLengthinSeconds, sampleBeginning = 0, sampleEnd = -1)
+        splitLengthinSeconds = 0.2
+        # multithreading
+        song = m.split(splitLengthinSeconds, sampleBeginning = 30, sampleEnd = 40)
 
         notes = list(executor.map(m.thread, song))
 

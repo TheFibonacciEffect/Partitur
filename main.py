@@ -26,7 +26,7 @@ class Extractor:
         else:
             file = file.replace("\\", "/" )    #UNIX uses foreward slashes instead of backslashes
 
-        #if it is not a wavfile, transform it using ffmpeg (not yet tested, TODO)
+        #TODO generate wavefile in designated folder
         if file[-4:] != ".wav":
             os.system(f'ffmpeg -i "{file}" "{file[:-4]}.wav"')
             
@@ -256,8 +256,8 @@ class Main(Extractor, Translator, Transformator):
         returns:
             notes in the form of [[triad], [triad]...]
         """
-        threshhold = 1/5
-        NUMBER_OF_NOTES = 6
+        threshhold = 1/5    #change the threshhold
+        NUMBER_OF_NOTES = 1 #change here to change the number of recorded notes
         transform = self.transform( y=data, frequencyBeginning = 300, frequencyEnd =  1000)
         mainFrequencies = self.findMainFrequencies(*self.findextrema(*transform, distance = 5), threshhold=threshhold, number=NUMBER_OF_NOTES )
         for i in mainFrequencies[0]:
