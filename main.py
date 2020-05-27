@@ -258,7 +258,7 @@ class Translator():
 class Main(Extractor, Translator, Transformator):
     def __init__(self, file):
         Extractor.__init__(self, file=file)
-    def _thread(self, data, threshhold, NUMBER_OF_NOTES):
+    def _thread(self, data, threshhold, numberOfNotes):
         """
         generator object
         input a song or a part of it
@@ -269,7 +269,7 @@ class Main(Extractor, Translator, Transformator):
         """
         
         transform = self.transform( y=data, frequencyBeginning = 300, frequencyEnd =  1000)
-        mainFrequencies = self.findMainFrequencies(*self.findextrema(*transform, distance = 5), threshhold=threshhold, number=NUMBER_OF_NOTES )
+        mainFrequencies = self.findMainFrequencies(*self.findextrema(*transform, distance = 5), threshhold=threshhold, number=numberOfNotes )
         for i in mainFrequencies[0]:
             note = self.frequencyToNoteValue(i)
             yield note

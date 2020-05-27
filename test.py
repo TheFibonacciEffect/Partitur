@@ -3,7 +3,7 @@ from main import Main
 import matplotlib.pyplot as plt
 import numpy as np
 
-file = input("file: ")
+file = r"ressources\thegodfather.wav" #input("file: ")
 chanel = 0
 sampleBeginning = 5.5
 sampleEnd = 10
