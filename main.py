@@ -221,6 +221,15 @@ class Translator():
 
     def removeRepetitions(self, data):
         #doesnt remove last triad if it has been repeaded. not ctritcal, just something to keep in mind
+        for i in range(len(data)):
+            j = 0
+            while j < len(data[i]) -1:
+                if data[i][j] == data[i][j+1]:
+                    print(data[i], j)
+                    del data[i][j+1]
+                else:
+                    j += 1
+
         i = 0
         while i < len(data) -1:
             if sorted(data[i]) == sorted(data[i+1]):
@@ -247,7 +256,7 @@ class Main(Extractor, Translator, Transformator):
         returns:
             notes in the form of [[triad], [triad]...]
         """
-        threshhold = 1/3
+        threshhold = 1/5
         NUMBER_OF_NOTES = 6
         transform = self.transform( y=data, frequencyBeginning = 300, frequencyEnd =  1000)
         mainFrequencies = self.findMainFrequencies(*self.findextrema(*transform, distance = 5), threshhold=threshhold, number=NUMBER_OF_NOTES )
