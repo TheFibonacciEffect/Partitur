@@ -219,17 +219,28 @@ class Translator():
         n = 12 * np.log2(frequency/fStartingNote)    #see http://www.techlib.com/reference/musical_note_frequencies.htm 
         return int(round(n))
 
-    def removeRepetitions(self, data):
+    def removeRepetitions(self, data, removePartialRepetitions = True):
         #doesnt remove last triad if it has been repeaded. not ctritcal, just something to keep in mind
+        #search for doubles in every triad
         for i in range(len(data)):
             j = 0
             while j < len(data[i]) -1:
                 if data[i][j] == data[i][j+1]:
-                    print(data[i], j)
                     del data[i][j+1]
                 else:
                     j += 1
+        
+        #search for triads beeing contained in previous triads
+        if removePartialRepetitions:
+            i = 0
+            while i < len(data) - 1:
+                if all([  j in data[i] for j in data[i+1]]):
+                    del data[i+1]
+                else:
+                    i += 1
+                
 
+        #seach for double triads
         i = 0
         while i < len(data) -1:
             if sorted(data[i]) == sorted(data[i+1]):
@@ -247,7 +258,7 @@ class Translator():
 class Main(Extractor, Translator, Transformator):
     def __init__(self, file):
         Extractor.__init__(self, file=file)
-    def _thread(self, data):
+    def _thread(self, data, threshhold, NUMBER_OF_NOTES):
         """
         generator object
         input a song or a part of it
@@ -256,8 +267,7 @@ class Main(Extractor, Translator, Transformator):
         returns:
             notes in the form of [[triad], [triad]...]
         """
-        threshhold = 1/5    #change the threshhold
-        NUMBER_OF_NOTES = 1 #change here to change the number of recorded notes
+        
         transform = self.transform( y=data, frequencyBeginning = 300, frequencyEnd =  1000)
         mainFrequencies = self.findMainFrequencies(*self.findextrema(*transform, distance = 5), threshhold=threshhold, number=NUMBER_OF_NOTES )
         for i in mainFrequencies[0]:

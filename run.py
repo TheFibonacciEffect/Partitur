@@ -2,16 +2,19 @@ from main import Main
 import concurrent.futures 
 
 
-file = input("file: ")
+threshhold = 1/5        #change the threshhold
+NUMBER_OF_NOTES = 6     #change here to change the number of recorded notes
+
+file = r"ressources\thegodfather.wav"   #input("file: ")
 if __name__ == '__main__':
     with concurrent.futures.ThreadPoolExecutor() as executor:
         m = Main(file)
 
         splitLengthinSeconds = 0.2
         # multithreading
-        song = m.split(splitLengthinSeconds, sampleBeginning = 30, sampleEnd = 40)
+        song = m.split(splitLengthinSeconds, sampleBeginning = 0, sampleEnd = 5)
 
-        notes = list(executor.map(m.thread, song))
+        notes = list(executor.map(lambda data: m.thread(data, threshhold, NUMBER_OF_NOTES), song))
 
         # every list in the list is a triad or more notes played at the same time [[0,12]] for example is an " a' " and an " a'' "
         notes = m.removeRepetitions(notes)
