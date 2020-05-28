@@ -285,10 +285,10 @@ class Main(Extractor, Translator, Transformator):
         print(f"numberOfSplits: {numberOfSplits}")
         return np.array_split(data, indices_or_sections= numberOfSplits )
 
-    def thread(self, *args):
+    def thread(self, *args, **kwargs):
         """turns the _thread genrerator obj. into a list"""
         #pylint: disable=no-value-for-parameter
-        return list(self._thread(*args))
+        return list(self._thread(*args, **kwargs))
 
     def main(self, chanel, sampleBeginning, sampleEnd, frequencyBeginning, frequencyEnd, distance, number, threshhold, fStartingNote = 440):
         self.values = self.extract(chanel, sampleBeginning, sampleEnd)
