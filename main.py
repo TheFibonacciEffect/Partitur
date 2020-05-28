@@ -73,7 +73,7 @@ class Extractor:
         #transform
         sampleBeginning = int(sampleBeginning * self.samplesPerSecond)
         sampleEnd = int(sampleEnd * self.samplesPerSecond) 
-        sample_length = sampleEnd - sampleBeginning
+        # sample_length = sampleEnd - sampleBeginning
 
         y = self.data[sampleBeginning :sampleEnd]
         plt.plot(x,y)
@@ -96,7 +96,7 @@ class Transformator():
     def __init__(self):
         pass
 
-    def transform(self, y, frequencyBeginning = 300, frequencyEnd =  1000, **kwargs):
+    def transform(self, y, samplesPerSecond,frequencyBeginning = 300, frequencyEnd =  1000, **kwargs):
         """the fourrier transform gives a representation of the frequencies in the input array
         fourrier transforms given array, returns (xf,yf)
         slicing improves processing spead and memory usage
@@ -110,7 +110,7 @@ class Transformator():
         #Come back and increment this number after you attempt to optimize this resource-heavy function and fail: 3
         yf = fft(y, overwrite_x=True, workers=1)
 
-        T = 1.0 / self.samplesPerSecond
+        T = 1.0 / samplesPerSecond
         frequencyBeginningIndex = int(frequencyBeginning*T*N)
         frequencyEndIndex = int(frequencyEnd*T*N)
         yf = yf[frequencyBeginningIndex:frequencyEndIndex]
@@ -268,7 +268,7 @@ class Main(Extractor, Translator, Transformator):
             notes in the form of [[triad], [triad]...]
         """
         
-        transform = self.transform( y=data, frequencyBeginning = 300, frequencyEnd =  1000)
+        transform = self.transform( y=data,samplesPerSecond=self.samplesPerSecond, frequencyBeginning = 300, frequencyEnd =  1000)
         mainFrequencies = self.findMainFrequencies(*self.findextrema(*transform, distance = 5), threshhold=threshhold, number=numberOfNotes )
         for i in mainFrequencies[0]:
             note = self.frequencyToNoteValue(i)
@@ -286,7 +286,8 @@ class Main(Extractor, Translator, Transformator):
         return np.array_split(data, indices_or_sections= numberOfSplits )
 
     def thread(self, *args):
-        """turns the _thread genrerator obj. into a list""" 
+        """turns the _thread genrerator obj. into a list"""
+        #pylint: disable=no-value-for-parameter
         return list(self._thread(*args))
 
     def main(self, chanel, sampleBeginning, sampleEnd, frequencyBeginning, frequencyEnd, distance, number, threshhold, fStartingNote = 440):
