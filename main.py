@@ -219,7 +219,7 @@ class Translator():
         n = 12 * np.log2(frequency/fStartingNote)    #see http://www.techlib.com/reference/musical_note_frequencies.htm 
         return int(round(n))
 
-    def removeRepetitions(self, data, removePartialRepetitions = True):
+    def removeRepetitions(self, data, removePartialRepetitions = True, removeOvertones = True):
         #doesnt remove last triad if it has been repeaded. not ctritcal, just something to keep in mind
         #search for doubles in every triad
         for i in range(len(data)):
@@ -229,7 +229,7 @@ class Translator():
                     del data[i][j+1]
                 else:
                     j += 1
-        
+
         #search for triads beeing contained in previous triads
         if removePartialRepetitions:
             i = 0
@@ -238,8 +238,7 @@ class Translator():
                     del data[i+1]
                 else:
                     i += 1
-                
-
+         
         #seach for double triads
         i = 0
         while i < len(data) -1:
@@ -247,12 +246,13 @@ class Translator():
                 del data[i+1]
             else:
                 i += 1
+
         return data
     
     def noteNames(self, data):
         key = ["a", "b", "h", "c", "cis", "d", "dis", "e", "f", "fis",  "g", "gis"]
-        
-        return [ [key[i % len(key)] for i in sorted(triad)] for triad in data ]
+        sort = True
+        return [ [key[i % len(key)] for i in (sorted(triad) if sort else triad)] for triad in data ]
 
 
 class Main(Extractor, Translator, Transformator):
