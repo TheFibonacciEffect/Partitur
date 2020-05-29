@@ -230,6 +230,16 @@ class Translator():
                 else:
                     j += 1
 
+        #remove values that are 12 greater than others
+        if removeOvertones:
+            for i in range(len(data)):
+                j = 0
+                while j < len(data[i]):
+                    if data[i][j] + 12 in data[i]:
+                        del data[i][j]
+                    else:
+                        j += 1
+
         #search for triads beeing contained in previous triads
         if removePartialRepetitions:
             i = 0
