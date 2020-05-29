@@ -201,7 +201,7 @@ class Translator():
         noise = 1000000
         i = 0
         while i < len(ySorted):
-            if ySorted[i] < ySorted[0]* threshhold or ySorted[i] <noise:
+            if ySorted[i] < ySorted[0] * threshhold or ySorted[i] <noise:
                 del ySorted[i]
                 del xSorted[i]
             else:
