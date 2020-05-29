@@ -22,3 +22,4 @@ if __name__ == '__main__':
         notes = m.noteNames(notes)
         print(len(notes))
         print(notes)
+        
