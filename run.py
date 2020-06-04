@@ -3,17 +3,18 @@ from main import Main
 import concurrent.futures 
 
 
-threshhold = 1/5        #change the threshhold
+sampleBeginning = 3
+sampleEnd = 4
+threshhold = 0.37999999999999945#1/5        #change the threshhold
 numberOfNotes = 6     #change here to change the number of recorded notes
-
-file = r"ressources\thegodfather.wav"   #input("file: ")
+file =  r"C:\Users\caspa\Documents\Sound recordings\Recording (8).m4a"  #input("file: ")
 if __name__ == '__main__':
     with concurrent.futures.ThreadPoolExecutor() as executor:
         m = Main(file)
 
         splitLengthinSeconds = 0.2
         # multithreading
-        song = m.split(splitLengthinSeconds, sampleBeginning = 0, sampleEnd = 5)
+        song = m.split(splitLengthinSeconds, sampleBeginning = sampleBeginning, sampleEnd = sampleEnd)
 
         notes = list(executor.map(lambda data: m.thread(data, threshhold, numberOfNotes), song))
 
