@@ -334,7 +334,8 @@ class Main(Extractor, Translator, Transformator):
         self.extrema = self.findextrema(*self.fvalues_xy, distance)
         self.mainFrequencies = self.findMainFrequencies(*self.extrema,threshhold, number)
         self.notes = [list(map(lambda x: self.frequencyToNoteValue(x, fStartingNote), self.mainFrequencies[0]))]
-        return self.notes
+        self.note_names = self.noteNames(self.notes )
+        return self.note_names
 
     
 if all((True, True, True == (True, True, True))):
