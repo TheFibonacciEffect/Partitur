@@ -330,7 +330,7 @@ class Main(Extractor, Translator, Transformator):
     def main(self, chanel, sampleBeginning, sampleEnd, frequencyBeginning, frequencyEnd, distance, number, threshhold, fStartingNote = 440):
         self.values = self.extract(chanel, sampleBeginning, sampleEnd)
         self.xvalues = np.arange(sampleBeginning, sampleEnd, 1/self.samplesPerSecond)
-        self.fvalues_xy = self.transform(self.values, frequencyBeginning, frequencyEnd)
+        self.fvalues_xy = self.transform(self.values, self.samplesPerSecond, frequencyBeginning, frequencyEnd)
         self.extrema = self.findextrema(*self.fvalues_xy, distance)
         self.mainFrequencies = self.findMainFrequencies(*self.extrema,threshhold, number)
         self.notes = [list(map(lambda x: self.frequencyToNoteValue(x, fStartingNote), self.mainFrequencies[0]))]
