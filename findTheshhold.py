@@ -14,14 +14,12 @@ distance = 5
 number = 6  #number of the notes to detect
 fStartingNote = 440
 
-threshhold = 0
+threshhold = 1
 
-for i in range(10):
+notes = []
+
+while notes != [["a", "c", "e"]] and threshhold > 0:
     notes = m.main(chanel, sampleBeginning, sampleEnd, frequencyBeginning, frequencyEnd, distance, number, threshhold , fStartingNote)
-    print(f"notes : {notes}")
-    if notes == ["a", "c", "e"]:
-        threshhold -= 1/2**i
-    else:
-        threshhold += 1/2**i
-    
+    threshhold -= 0.02
+
 print(threshhold)
