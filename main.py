@@ -48,11 +48,18 @@ class Extractor:
 
         #TODO generate wavefile in designated folder
         if file[-4:] != ".wav":
-            os.system(f'ffmpeg -i "{file}" "{file[:-4]}.wav"')
             
-            print(file)
-            self.file = file[:-4]+".wav"
-            print(self.file)
+            filename = file[file.rfind('\\'):-4]
+            cachePath = f"{os.getcwd()}\\cache\\{filename}.wav"
+            if isfile(cachePath):
+                print(f"using cached at {cachePath}")
+                self.file = cachePath
+            else:
+                os.system(f'ffmpeg -i "{file}" {cachePath}')
+                
+                print(file)
+                self.file = cachePath
+                print(self.file)
         else:
             self.file = file
             
