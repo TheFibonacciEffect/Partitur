@@ -3,16 +3,16 @@ from main import Main
 import matplotlib.pyplot as plt
 import numpy as np
 
-file = r"ressources\thegodfather.wav" #input("file: ")
+file = r"C:\Users\caspa\Documents\Sound recordings\Recording (8).m4a" #input("file: ")
 chanel = 0
-sampleBeginning = 5.5
-sampleEnd = 10
+sampleBeginning = 2
+sampleEnd = 3
 #piano frequency range
 frequencyBeginning = 27.5
 frequencyEnd= 4186
 distance = 5
 number = 6  #number of the notes to detect
-threshhold = 1/5
+threshhold = 0.37999999999999945
 fStartingNote = 440
 
 
