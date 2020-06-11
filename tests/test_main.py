@@ -23,10 +23,7 @@ class TestMain():
         threshhold = 0.37999999999999945
         fStartingNote = 440
 
-
         main = Main(r"ressources\60 Hz Test Tone-GqwFimG3X3w.wav")
-
         main.main(chanel, sampleBeginning, sampleEnd, frequencyBeginning, frequencyEnd, distance, number, threshhold, fStartingNote)
-
         noteValue = main.notes
         assert noteValue == [[-34]]
