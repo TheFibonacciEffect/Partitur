@@ -1,14 +1,16 @@
-# # an untested code is broken as designed
+# an untested code is broken as designed
 
+# add parent dir, so tests can be imported
 import sys
 import pathlib
 path = str(pathlib.Path(__file__).parent.parent)
 sys.path.append(path)
 
-from main import Main
-
 import numpy as np
 import pytest
+
+#import units to test
+from main import Main
 
 class TestMain():
     def test_main(self):
