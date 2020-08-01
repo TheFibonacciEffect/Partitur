@@ -126,7 +126,8 @@ class Transformator():
     def transform(self, y, samplesPerSecond,frequencyBeginning = 300, frequencyEnd =  1000, **kwargs):
         """the fourrier transform gives a representation of the frequencies in the input array
         fourrier transforms given array, returns (xf,yf)
-        slicing improves processing spead and memory usage
+        slicing improves processing speed and memory usage
+
         returns:
             xf: x coordinate linspace
             yf: fourrier transform of input array"""
