@@ -29,3 +29,20 @@ class TestMain():
         main.main(chanel, sampleBeginning, sampleEnd, frequencyBeginning, frequencyEnd, distance, number, threshhold, fStartingNote)
         noteValue = main.notes
         assert noteValue == [[-34]]
+
+    def test_notwav(self):
+        chanel = 0
+        sampleBeginning = 2
+        sampleEnd = 3
+        #piano frequency range
+        frequencyBeginning = 27.5
+        frequencyEnd= 4186
+        distance = 5
+        number = 6  #number of the notes to detect
+        threshhold = 0.37999999999999945
+        fStartingNote = 440
+
+        main = Main(r"C:\Users\caspa\Documents\Code\Python Projects\Partitur\ressources\Recording (8).m4a")
+        main.main(chanel, sampleBeginning, sampleEnd, frequencyBeginning, frequencyEnd, distance, number, threshhold, fStartingNote)
+        noteValue = main.notes
+        assert noteValue == [[7,0,3]]
