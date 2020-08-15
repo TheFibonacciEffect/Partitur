@@ -26,6 +26,7 @@ from scipy.signal import find_peaks
 from os.path import isfile
 from coloredOutput import style
 import os
+import pathlib
 
 class Extractor:
     """class used to extract a numpy array from a .wav file
@@ -39,18 +40,19 @@ class Extractor:
     """
     def __init__(self, file):
         
-        file = file.strip("\"")
+        file = pathlib.Path(file)
 
-        if isfile(file):
-            pass    
-        else:
-            file = file.replace("\\", "/" )    #UNIX uses foreward slashes instead of backslashes
+        # if isfile(file):
+        #     pass    
+        # else:
+        #     file = file.replace("\\", "/" )    #UNIX uses foreward slashes instead of backslashes
 
-        #TODO generate wavefile in designated folder
-        if file[-4:] != ".wav":
+        #TODO use pathlib
+        if file.suffix != ".wav":
+            print(str(file))
             
-            filename = file[file.rfind('\\'):-4]
-            cachePath = f"{os.getcwd()}\\cache\\{filename}.wav"
+            cachePath = pathlib.Path(os.getcwd()) / pathlib.Path("cache") / pathlib.Path(file.name.replace(file.suffix, "") + ".wav")
+            #cachePath = f"{os.getcwd()}\\cache\\{file.name}.wav"
             if isfile(cachePath):
                 print(f"using cached at {cachePath}")
                 self.file = cachePath
