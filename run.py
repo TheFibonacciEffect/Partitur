@@ -7,7 +7,7 @@ sampleBeginning = 3
 sampleEnd = 4
 threshhold = 0.37999999999999945#1/5        #change the threshhold
 numberOfNotes = 6     #change here to change the number of recorded notes
-file =  r"C:\Users\caspa\Documents\Sound recordings\Recording (8).m4a"  #input("file: ")
+file = r"ressources\Recording (8).m4a"
 if __name__ == '__main__':
     with concurrent.futures.ThreadPoolExecutor() as executor:
         m = Main(file)
