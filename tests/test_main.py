@@ -24,7 +24,6 @@ class TestMain():
         number = 6  #number of the notes to detect
         threshhold = 0.37999999999999945
         fStartingNote = 440
-
         main = Main(r"ressources\60 Hz Test Tone-GqwFimG3X3w.wav")
         main.main(chanel, sampleBeginning, sampleEnd, frequencyBeginning, frequencyEnd, distance, number, threshhold, fStartingNote)
         noteValue = main.notes
@@ -45,4 +44,5 @@ class TestMain():
         main = Main(r"C:\Users\caspa\Documents\Code\Python Projects\Partitur\ressources\Recording (8).m4a")
         main.main(chanel, sampleBeginning, sampleEnd, frequencyBeginning, frequencyEnd, distance, number, threshhold, fStartingNote)
         noteValue = main.notes
-        assert noteValue == [[7,0,3]]
+        names = main.note_names
+        assert noteValue == [[7,0,3]] and names == [["a","c","e"]]
