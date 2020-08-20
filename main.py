@@ -49,7 +49,6 @@ class Extractor:
 
         #TODO use pathlib
         if file.suffix != ".wav":
-            print(str(file))
             
             cachePath = pathlib.Path(os.getcwd()) / pathlib.Path("cache") / pathlib.Path(file.name.replace(file.suffix, "") + ".wav")
             #cachePath = f"{os.getcwd()}\\cache\\{file.name}.wav"
@@ -58,10 +57,7 @@ class Extractor:
                 self.file = cachePath
             else:
                 os.system(f'ffmpeg -i "{file}" {cachePath}')
-                
-                print(file)
                 self.file = cachePath
-                print(self.file)
         else:
             self.file = file
             
