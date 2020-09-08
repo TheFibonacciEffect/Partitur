@@ -56,7 +56,7 @@ class Extractor:
                 print(f"using cached at {cachePath}")
                 self.file = cachePath
             else:
-                os.system(f'ffmpeg -i "{file}" {cachePath}')
+                os.system(f'ffmpeg -i "{file}" "{cachePath}"')
                 self.file = cachePath
         else:
             self.file = file
@@ -224,7 +224,7 @@ class Translator():
         ySorted = list(np.flip(yUnsorted, -1))[:number]
 
         #if the peak is lower than 2/3 of the highest peak, or so low it could be noise, delete it
-        noise = 1000000
+        noise = 100000#1000000
         i = 0
         while i < len(ySorted):
             if ySorted[i] < ySorted[0] * threshhold or ySorted[i] <noise:
@@ -333,7 +333,8 @@ class Main(Extractor, Translator, Transformator):
         self.extrema = self.findextrema(*self.fvalues_xy, distance)
         self.mainFrequencies = self.findMainFrequencies(*self.extrema,threshhold, number)
         self.notes = [list(map(lambda x: self.frequencyToNoteValue(x, fStartingNote), self.mainFrequencies[0]))]
-        self.note_names = self.noteNames(self.notes )
+        self.notes_clean = self.removeRepetitions(self.notes)
+        self.note_names = self.noteNames(self.notes_clean)
         return self.note_names
 
     
