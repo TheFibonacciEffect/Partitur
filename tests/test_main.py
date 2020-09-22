@@ -41,7 +41,7 @@ class TestMain():
         threshhold = 0.37999999999999945
         fStartingNote = 440
 
-        main = Main(r"C:\Users\caspa\Documents\Code\Python Projects\Partitur\ressources\Recording (8).m4a")
+        main = Main(r"\ressources\Recording (8).m4a")
         main.main(chanel, sampleBeginning, sampleEnd, frequencyBeginning, frequencyEnd, distance, number, threshhold, fStartingNote)
         noteValue = main.notes
         #main.removeRepetitions(noteValue)

@@ -3,7 +3,7 @@ from main import Main
 import matplotlib.pyplot as plt
 import numpy as np
 
-file = r"C:\Users\caspa\Documents\Sound recordings\Recording (8).m4a" #input("file: ")
+file = r"\ressources\Recording (8).m4a" #input("file: ")
 chanel = 0
 sampleBeginning = 2
 sampleEnd = 3
