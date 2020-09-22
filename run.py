@@ -1,11 +1,11 @@
 from main import Main
 import concurrent.futures 
 
+file = input(r"file: ")
+threshhold = float(input(r"threshhold (0.37 works for me, depending on the instrument): "))        #change the threshhold
+numberOfNotes = int(input(r"maximum number of notes to detect: "))     #change here to change the number of recorded notes
 
-threshhold = 1/5        #change the threshhold
-numberOfNotes = 6     #change here to change the number of recorded notes
 
-file = r"ressources\thegodfather.wav"   #input("file: ")
 if __name__ == '__main__':
     with concurrent.futures.ThreadPoolExecutor() as executor:
         m = Main(file)
