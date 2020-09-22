@@ -21,6 +21,10 @@ execute the batch/ps/cmdlet/script found in ``.\.music\Scripts\`` (whatever suit
 
 ``pip -r install requirenments.txt``
 
+## How to run the programm
+
+to run the programm just type ``python run.py`` into your commandline
+
 ## This is what it does so far
 
 
