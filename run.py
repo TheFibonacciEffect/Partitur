@@ -3,11 +3,11 @@ from main import Main
 import concurrent.futures 
 
 
-sampleBeginning = 3
-sampleEnd = 4
-threshhold = 0.37999999999999945#1/5        #change the threshhold
-numberOfNotes = 6     #change here to change the number of recorded notes
-file = r"ressources\Recording (8).m4a"
+file = input("file: ")
+sampleBeginning = input("beginning of Sample in seconds: ")
+sampleEnd =       float(input("end of Sample in seconds: "))
+threshhold =      float(input("threshhold to suppress noise: "))
+numberOfNotes =   int(input("maximum number uf notes to detect: "))
 if __name__ == '__main__':
     with concurrent.futures.ThreadPoolExecutor() as executor:
         m = Main(file)
