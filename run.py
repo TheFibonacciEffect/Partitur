@@ -7,7 +7,7 @@ file = input("file: ")
 sampleBeginning = input("beginning of Sample in seconds: ")
 sampleEnd =       float(input("end of Sample in seconds: "))
 threshhold =      float(input("threshhold to suppress noise: "))
-numberOfNotes =   int(input("maximum number uf notes to detect: "))
+numberOfNotes =   int(input("maximum number of notes to detect: "))
 if __name__ == '__main__':
     with concurrent.futures.ThreadPoolExecutor() as executor:
         m = Main(file)
