@@ -46,4 +46,4 @@ class TestMain():
         noteValue = main.notes
         #main.removeRepetitions(noteValue)
         names = main.note_names
-        assert noteValue == [[7, 12, 15]] and names == [["e", "a","c"]] #noteValue == [[7,0,3]] and names == [["a","c","e"]]
+        assert noteValue == [[7,0,3]] and names == [["a","c","e"]] #noteValue == [[7, 12, 15]] and names == [["e", "a","c"]]
