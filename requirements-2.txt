@@ -37,7 +37,7 @@ parso==0.7.0
 pickleshare==0.7.5
 prometheus-client==0.8.0
 prompt-toolkit==3.0.5
-Pygments==2.6.1
+Pygments==2.7.4
 pylint==2.5.2
 pyparser==1.0
 pyparsing==2.4.7
