@@ -2,6 +2,12 @@
 A program to extract Sheet music from an .mp3 or .wav file
 You can find the newest version in the "unstable" branch and the newest tested version in the "developement" branch.
 
+# Status
+_This project is not in developement any more_
+If you want to feel free to create a fork.
+
+# Installation
+
 Install [Python 3.8.3](https://www.python.org/ftp/python/3.8.3/python-3.8.3-amd64-webinstall.exe) (this is the Windows Webbased installer, for others click [here](https://www.python.org/downloads/release/python-383/), don't forget to add python to PATH ;D
 
 Download and Extract the files from this Directory into a new directory named ``Partitur``
